@@ -1,0 +1,70 @@
+{
+  "name": "sig-linea-130-server",
+  "version": "0.0.1",
+  "description": "Servidor web y proveedor de API REST para las aplicaciones clientes para gestionar la línea de micros 130",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"error: no test command found\\n\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koxelez/sig-linea-130-server.git"
+  },
+  "keywords": [
+    "micro",
+    "micros",
+    "bus",
+    "buses",
+    "estación",
+    "estacion",
+    "parada",
+    "gestion",
+    "de",
+    "buses",
+    "gestión",
+    "de",
+    "buses",
+    "gestion",
+    "de",
+    "micros",
+    "gestión",
+    "de",
+    "micros",
+    "rutas",
+    "puntos",
+    "de",
+    "control",
+    "paradas",
+    "seguimiento",
+    "rastreo",
+    "nodejs",
+    "socket.io",
+    "leaflet",
+    "shapefile",
+    "sig",
+    "gis",
+    "sistema",
+    "de",
+    "información",
+    "geográfica",
+    "sistema",
+    "de",
+    "informacion",
+    "geografica"
+  ],
+  "author": "koxelez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/koxelez/sig-linea-130-server/issues"
+  },
+  "homepage": "https://github.com/koxelez/sig-linea-130-server#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^2.6.1",
+    "express": "^4.17.1",
+    "passport": "^0.4.0",
+    "pg": "^7.11.0",
+    "shapefile": "^0.6.6",
+    "socket.io": "^2.2.0"
+  }
+}

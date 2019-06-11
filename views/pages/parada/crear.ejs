@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+    <% include ../../partials/nav.ejs %>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card" id="form-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Crear Nueva Empresa</h5>
+                        <hr>
+                        <form enctype="multipart/form-data" action="action" method="POST">
+                            <div id="form" class="form-group">
+                                <label for="txt-nombre-empresa">Nombre o razón social de la empresa:</label>
+                                <input class="form-control" type="text" name="txt-nombre-empresa"
+                                    id="txt-nombre-empresa" placeholder="Ej: Las Delicias">
+                                <br>
+                                <label for="txt-slogan-empresa">Slogan de la empresa:</label>
+                                <input class="form-control" type="text" name="txt-slogan-empresa"
+                                    id="txt-slogan-empresa" placeholder="Ej: 'Sinónimo de calidad'">
+                                <br>
+                                <label for="txt-direccion-empresa">Dirección de la empresa:</label>
+                                <input class="form-control" type="text" name="txt-direccion-empresa"
+                                    id="txt-direccion-empresa"
+                                    placeholder="Ej: Calle Rodolfo Añez 54 Esq. Roberto Segovia">
+                                <br>
+                                <label for="txt-telefono-empresa">Número de Teléfono:</label>
+                                <input class="form-control" type="text" name="txt-telefono-empresa"
+                                    id="txt-telefono-empresa" placeholder="Ej: +591 33884579">
+                                <br>
+                                <label for="txt-email-empresa">Dirección de email:</label>
+                                <input class="form-control" type="text" name="txt-email-empresa" id="txt-email-empresa"
+                                    placeholder="Ej: casilla_correo@empresa.com">
+                                <br>
+                                <label for="img-logo-empresa">Logo de la Empresa:</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <input type="file" style="background-color: slategray; border-radius: 3px;" name="img-logo-empresa" id="img-logo-empresa" class="link">
+                                    </div>
+                                </div>
+
+                                <br>
+                                <input class="btn btn-primary" type="submit" value="Crear">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <p>Links útiles:</p>
+                <ul>
+                    <li><a href="#">Link1</a></li>
+                    <li><a href="#">Link2</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

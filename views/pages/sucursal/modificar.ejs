@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+    <% include ../../partials/nav.ejs %>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card" id="form-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Modificar Sucursal: </h5>
+                        <form action="action" method="POST">
+                            <div id="form" class="form-group">
+                                <label for="txt-nombre-sucursal">Nombre de la sucursal:</label>
+                                <input class="form-control" type="text" name="txt-nombre-sucursal" id="txt-nombre-sucursal"
+                                    placeholder="Ej: Las Delicias suc. Mall Las Brisas">
+                                <br>
+                                <label for="txt-direccion-sucursal">Dirección de la sucursal:</label>
+                                <input class="form-control" type="text" name="txt-direccion-sucursal" id="txt-direccion-sucursal"
+                                    placeholder="Ej: Calle Rodolfo Añez 54 Esq. Roberto Segovia">
+                                <br>
+                                <label for="txt-telefono-sucursal">Número de Teléfono:</label>
+                                <input class="form-control" type="text" name="txt-telefono-sucursal" id="txt-telefono-sucursal"
+                                    placeholder="Ej: +591 33884579">
+                                <br>
+                                <input class="btn btn-primary" type="submit" value="Guardar cambios">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <p>Links útiles:</p>
+                <ul>
+                    <li><a href="#">Link1</a></li>
+                    <li><a href="#">Link2</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

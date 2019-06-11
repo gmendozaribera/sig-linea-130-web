@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+    <% include ../../partials/nav.ejs %>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card" id="form-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Verificar dirección de email</h5>
+                        <hr>
+                        <form action="action" method="GET">
+                            <div id="form" class="form-group">
+                                <label for="txt-nombre-sucursal">Código de Verificación:</label>
+                                <input class="form-control" type="text" name="txt-verification-code" id="txt-verification-code"
+                                    placeholder="●●●●●●●●●●">
+                                <br>
+                                <input class="btn btn-primary" type="submit" value="Verificar">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

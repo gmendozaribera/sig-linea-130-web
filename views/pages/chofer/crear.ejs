@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+    <% include ../../partials/nav.ejs %>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card" id="form-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Crear Nueva Categoría</h5>
+                        <form action="action" method="POST">
+                            <div id="form" class="form-group">
+                                <label for="txt-nombre-categoria">Nombre de la Categoría:</label>
+                                <input type="text" maxlength="50" name="txt-nombre-categoria" id="txt-nombre-categoria" class="form-control" 
+                                    placeholder="Ej: Comida rápida">
+                                <br>
+                                <label for="txt-descripcion-categoria">Descripción de la Categoría:</label>
+                                <input type="text" maxlength="255" name="txt-descripcion-categoria" id="txt-descripcion-categoria" class="form-control"
+                                    placeholder="Ej: Calle Rodolfo Añez 54 Esq. Roberto Segovia">
+                                <br>
+                                <label for="sel-categoria-padre">Categoría Padre:</label>
+                                <select name="sel-categoria-padre" id="sel-categoria-padre" class="form-control">
+                                    <option value="null" selected>- Ninguno -</option>
+                                    <option value="1">Empresa1</option>
+                                    <option value="2">Empresa2</option>
+                                    <option value="3">Empresa3</option>
+                                </select>
+                                <br>
+                                <input class="btn btn-primary" type="submit" value="Crear">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <p>Links útiles:</p>
+                <ul>
+                    <li><a href="#">Link1</a></li>
+                    <li><a href="#">Link2</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

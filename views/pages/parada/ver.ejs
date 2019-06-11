@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../../partials/header.ejs %>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+</head>
+
+<body>
+
+    <% include ../../partials/nav.ejs %>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card" id="form-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Empresa: NOMBRE</h5>
+                        <hr>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td><b>Nombre o Razón Social:</b></td>
+                                <td>Telefono de Ejemplo</td>
+                            </tr>
+                            <tr>
+                                <td><b>Slogan:</b></td>
+                                <td>Slogan de Ejemplo</td>
+                            </tr>
+                            <tr>
+                                <td><b>Dirección:</b></td>
+                                <td>Direccion de ejemplo</td>
+                            </tr>
+                            <tr>
+                                <td><b>Email:</b></td>
+                                <td><a href="mailto:ejemplo@mail.com">ejemplo@mail.com</a></td>
+                            </tr>
+                            <tr>
+                                <td><b>Teléfono</b></td>
+                                <td>70000000</td>
+                            </tr>
+                        </table>
+                        <hr>
+                        <h5>Ubicación en mapa:</h5>
+                        <div id="map-element" style="height: 500px; width: 75%"></div>
+                        <hr>
+                        <a href="#" class="btn btn-primary">Editar</a>
+                        <a href="#" class="btn btn-danger">Eliminar</a>
+                    </div>
+                </div>
+                <p>Links útiles:</p>
+                <ul>
+                    <li><a href="#">Link1</a></li>
+                    <li><a href="#">Link2</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <% include ../../partials/footer.ejs %>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+        crossorigin=""></script>
+
+    <script>
+        // defining some constants...
+        const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const osmAttrib = 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+        
+        // instantiate the map on the proper DIV element
+        const myMap = L.map('map-element');
+
+        // create the tile layer (with attribution)
+        const osm = new L.TileLayer(osmUrl, { minZoom: 12, maxZoom: 20, attribution: osmAttrib });
+
+        // start the map in scz,bo
+        myMap.setView([-17.783292257407, -63.1821262836456], 15);
+        myMap.addLayer(osm);
+    </script>
+</body>
+
+</html>

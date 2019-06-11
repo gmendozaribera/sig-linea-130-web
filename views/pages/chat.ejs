@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+    <% include ../partials/nav.ejs %>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-6">
+                &nbsp;
+
+                <div id="messages-card" class="card">
+                    <div class="card-header">
+                        <h3 class="card-title.">Chatter</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><i>messages should appear here...</i></p>
+                        <ul id="messages"></ul>
+                    </div>
+                    <div class="card-footer">
+                        <form action="" class="form-group" id="message-form">
+                            <div class="input-group">
+                                <input id="m" autocomplete="off" type="text" class="form-control"
+                                    placeholder="Type your message here" aria-label="Message:"
+                                    aria-describedby="button-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" type="submit">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div> <!-- end of panel -->
+
+            </div>
+        </div>
+
+
+    </div> <!-- container -->
+
+
+    <% include ../partials/footer.ejs %>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // creating a random user name
+        var uname = 'user' + Math.trunc(Math.random() * 100000000);
+
+        // creating socket.io instance (io() with no params means "this computer, any port")
+        // connecting to the "tech" namespace; "javacript" room
+        const socket = io('http://localhost:5000/tech');
+        const room = 'javascript';
+
+        // message sending logic: create object, emit it to "message" event then clear input box
+        // selecting DOM elements via JQuery
+        $('#message-form').submit(() => {
+            let msg = $('#m').val();
+            let obj = { room: room, uname: uname, msg: msg };
+            socket.emit('message', obj);
+            $('#m').val('');  // clear input box
+            return false;     // no idea why xD
+            // actually, returning false prevents the page from reloading :D
+        });
+
+        // on "connect" event join the room
+        socket.on('connect', () => {
+            socket.emit('join', { uname: uname, room: room }); // emits to everybody
+        });
+
+        // listen for "message" event
+        socket.on('message', (msg) => {
+            $('#messages').append($('<li>').text(msg));
+        });
+    </script>
+</body>
+
+</html>

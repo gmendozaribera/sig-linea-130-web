@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+    <% include ../../partials/nav.ejs %>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card" id="form-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Reestablecer contraseña olvidada</h5>
+                        <hr>
+                        <form action="action" method="POST">
+                            <div id="form" class="form-group">
+                                <label for="txt-nombre-sucursal">Direccion de Email:</label>
+                                <input class="form-control" type="email" name="txt-email" id="txt-email"
+                                    placeholder="Ej: alguien@email.com">
+                                <br>
+                                <input class="btn btn-primary" type="submit" value="Solicitar cambio de contraseña">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

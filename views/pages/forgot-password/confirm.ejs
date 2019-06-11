@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+    <% include ../../partials/nav.ejs %>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card" id="form-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Introducir contraseña nueva</h5>
+                        <hr>
+                        <form action="action" method="POST">
+                            <div id="form" class="form-group">
+                                <label for="txt-password">Contraseña:</label>
+                                <input class="form-control" type="password" name="txt-password" id="txt-password"
+                                    placeholder="●●●●●●●●●●">
+                                <br>
+                                <label for="txt-password-confirm">Repetir contraseña:</label>
+                                <input class="form-control" type="password" name="txt-password-confirm" id="txt-password-confirm"
+                                    placeholder="●●●●●●●●●●">
+                                <br>
+                                <input class="btn btn-primary" type="submit" value="Solicitar cambio de contraseña" onclick="validarPassword">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <% include ../../partials/footer.ejs %>
+
+    <script>
+        function validarPassword(event){
+            if (!(document.getElementById('txt-password').textContent === document.getElementById('txt-password-confirm').textContent))
+                event.preventDefault();
+        }
+    </script>
+</body>
+
+</html>
