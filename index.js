@@ -104,23 +104,39 @@ app.get('/chat', (req, res) => {
     res.render('pages/chat');
 });
 
+// página para mostrar el form de chat
+app.get('/tracking', (req, res) => {
+    res.render('pages/tracking');
+});
+
 // handler de socket.io (requiere instanciarse con un servidor http)
 const io = require('socket.io')(server);
 
-// tech namespace
+// espacio de nombres "tech"
 const techNsp = io.of('/tech');
-// listening as server (using "io")
+
+// escuchar como servidor
 techNsp.on('connection', (socket) => {
     socket.on('join', (data) => {
         console.log(`user joined: ${data.uname}@${data.room}`);
         socket.join(data.room);
-        techNsp.in(data.room).emit('message', `User ${data.uname} joined ${data.room} room!`);
+        techNsp.in(data.room).emit('message', `El usuario ${data.uname} se ha unido a la sala ${data.room}!`);
     });
 
-    // log the received message and emit to connected clients
+    // registrar el mensaje recibido en la consola y emitir a todos
+    // los clientes conectados a la misma sala
     socket.on('message', (obj) => {
         console.log(`[MSG] Received in "${obj.room}" from "${obj.uname}": "${obj.msg}"`);
-        techNsp.in(obj.room).emit('message', `${obj.uname} says: ${obj.msg}`); // send to all connected clients
+        techNsp.in(obj.room).emit('message', `${obj.uname} says: ${obj.msg}`);
+    });
+
+    /*  data: {
+            room: 'tracking',
+            pointLatLon: {lat: -17.x, lon: -63.x}
+        }
+    */
+    socket.on('location',(data)=>{
+        techNsp.in(data.room).emit('location',data.pointLatLon);
     });
 
 

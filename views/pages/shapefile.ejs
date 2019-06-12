@@ -62,12 +62,8 @@
 
 
   <script type="text/javascript" src="/js/leaflet.js"></script>
-  <script type="text/javascript" src="/js/geoJsonLoaders.js"></script>
+  <script type="text/javascript" src="/js/geoJsonLoader.js"></script>
   <script>
-    let ajaxRequest;
-    let plotlist;
-    let plotlayers = [];
-
     // establecer el mapa, pasandole el ID de un DIV en el cual se pueda dibujar
     const map = new L.Map('map');
 
@@ -81,30 +77,29 @@
     map.addLayer(osm);
 
     // --------------------- ajax request --------------------
-    
 
+    ajaxGetRequest('http://localhost:5000/get-geojson', (geoJson) => {
+      L.geoJSON(geoJson.geometry).addTo(map);
+    });
 
-
-    
-          L.geoJSON(geoJsonFeature.geometry).addTo(map);
-       
-
-    function cargarRutaIda(){
+    /* TO DO:
+    function cargarRutaIda() {
 
     }
 
-    function cargarRutaVuelta(){
+    function cargarRutaVuelta() {
 
     }
 
-    function cargarParadas(){
+    function cargarParadas() {
 
 
     }
 
-    function cargarPuntosControl(){
+    function cargarPuntosControl() {
 
     }
+    */
 
   </script>
 </body>
