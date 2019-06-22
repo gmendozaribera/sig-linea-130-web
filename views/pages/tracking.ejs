@@ -2,106 +2,104 @@
 <html>
 
 <head>
-    <% include ../partials/header.ejs %>
-    <link type="text/css" href="/css/leaflet.css" rel="stylesheet">
+  <% include ../partials/header.ejs %>
+  <link type="text/css" href="/css/leaflet.css" rel="stylesheet">
 </head>
 
 <body>
 
-    <% include ../partials/nav.ejs %>
+  <% include ../partials/nav.ejs %>
 
-    <div class="jumbotron text-center" style="
+  <div class="jumbotron text-center" style="
       background-image: url('/img/website-header-blur-dark.jpg');
       background-repeat: no-repeat;
       background-size: 100%;">
-        <div class="container">
-            <a href="/" class="lang-logo">
-                <img src="/lang-logo.png">
-            </a>
-            <h1>Gestión de la Linea de Micros 130</h1>
-            <!--
+    <div class="container">
+      <a href="/" class="lang-logo">
+        <img src="/lang-logo.png">
+      </a>
+      <h1>Gestión de la Linea de Micros 130</h1>
+      <!--
       <p>Esta es una aplicación basada en el ejemplo de NodeJS de Heroku.</p>
       <a type="button" class="btn btn-lg btn-primary" href="/login"><span class="oi oi-account-login"></span> Iniciar sesión</a>
       <a type="button" class="btn btn-lg btn-secondary" href="/signup"><span class="oi oi-flash"></span> Crear una cuenta</a>
       -->
+    </div>
+  </div>
+
+  <div class="container">
+
+    <hr>
+
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Seguimiento de Buses</h3>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"><span class="oi oi-map" style="color: darkgreen"></span> Mapa</h5>
+            <hr>
+            <!-- el mapa Leaflet se renderiza aquí -->
+            <div class="map" id="map" style="width: 100%; height: 500px"></div>
+          </div>
         </div>
+      </div>
     </div>
 
-    <div class="container">
+    <hr>
 
-        <hr>
+  </div> <!-- container -->
 
-        <div class="row">
-            <div class="col-lg-12">
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Seguimiento de Buses</h3>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title"><span class="oi oi-map" style="color: darkgreen"></span> Mapa</h5>
-                        <hr>
-                        <!-- el mapa Leaflet se renderiza aquí -->
-                        <div class="map" id="map" style="width: 100%; height: 500px"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <hr>
-
-    </div> <!-- container -->
-
-    <% include ../partials/footer.ejs %>
+  <% include ../partials/footer.ejs %>
 
 
-    <script type="text/javascript" src="/js/leaflet.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="/js/leaflet.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 
-    <script>
-        // establecer el mapa, pasandole el ID de un DIV en el cual se pueda dibujar
-        const map = new L.Map('map');
+  <script>
+    // establecer el mapa, pasandole el ID de un DIV en el cual se pueda dibujar
+    const map = new L.Map('map');
 
-        // crear la capa de imagenes de mapa con la atribución correcta
-        const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        const osmAttrib = 'Datos de mapa © <a href="https://openstreetmap.org">OpenStreetMap</a> y contribuyentes';
-        const osm = new L.TileLayer(osmUrl, { minZoom: 12, maxZoom: 19, attribution: osmAttrib });
+    // crear la capa de tiles con la atribución correcta
+    const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const osmAttrib = 'Datos de mapa © <a href="https://openstreetmap.org">OpenStreetMap</a> y contribuyentes';
+    const osm = new L.TileLayer(osmUrl, { minZoom: 12, maxZoom: 19, attribution: osmAttrib });
 
-        // iniciar el mapa centrado en la plaza 24 de septiembre, zoom nivel 12
-        map.setView(new L.LatLng(-17.783318, -63.182120), 12);
-        map.addLayer(osm);
+    // iniciar el mapa centrado en la plaza 24 de septiembre, zoom nivel 12
+    map.setView(new L.LatLng(-17.783318, -63.182120), 12);
+    map.addLayer(osm);
 
-        /*  pointLatLon debe ser un objeto con miembros:
-                - lat: -17.xxx
-                - lon: -63.xxx         */
-        function colocarMarcador(map, pointLatLon){
-            return L.marker([pointLatLon.lat, pointLatLon.lon]).addTo(map);
-        }
+    /*  pointLatLon debe ser un objeto con miembros:
+            - lat: -17.xxx
+            - lon: -63.xxx         */
+    function colocarMarcador(map, pointLatLon) {
+      return L.marker([pointLatLon.lat, pointLatLon.lon]).addTo(map);
+    }
 
-    </script>
+  </script>
 
-    <script>
-        const socket = io('http://localhost:5000/tech');
-        const uname = 'Página de rastreo';
-        const room = 'tracking';
+  <script>
+    const server = 'http://localhost:5000/';
+    const nsp = 'tech';
+    const socket = io(server + nsp);
+    const uname = 'Página de rastreo';
+    const room = 'tracking';
 
-        // al conectarse, unirse a la sala
-        socket.on('connect', () => {
-            socket.emit('join', { uname: uname, room: room });
-            alert('Socket.IO conectado!');
-        });
+    // al conectarse, unirse a la sala
+    socket.on('connect', () => {
+      socket.emit('join', { uname, room });
+      console.log('Socket.IO conectado!');
+    });
 
-        // evento al recibir una nueva ubicación
-        /*  pointLatLon: {
-                lat: -17.x,
-                lon: -63.x
-            }
-        */
-        socket.on('location',(pointLatLon) => {
-            // crear nuevo marcador y colocarlo en el mapa leaflet
-            colocarMarcador(map,pointLatLon);
-        })
-    </script>
+    // evento al recibir una nueva ubicación
+    // pointLatLon: { lat: -17.x, lon: -63.x}
+    socket.on('location', (pointLatLon) => {
+      // crear nuevo marcador y colocarlo en el mapa leaflet
+      colocarMarcador(map, pointLatLon);
+    })
+  </script>
 </body>
 
 </html>

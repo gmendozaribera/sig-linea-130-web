@@ -6,7 +6,7 @@ const fs = require('fs');                   // para manejo de archivos
 const express = require('express');         // servidor HTTP
 const { Pool } = require('pg');             // conector a PostgreSQL
 const bodyParser = require('body-parser');  // para manejar POST requests
-const shapefile = require('shapefile');
+const shapefile = require('shapefile');     // para leer shapefiles
 
 // algunas variables de entorno. TODO: mover a .env
 const http_port = 5000;
@@ -28,7 +28,7 @@ app.set('view engine', 'ejs');
 // configuración del directorio público
 app.use(express.static(path.join(__dirname, 'public')));
 
-// estableciendo body-parser (para poder trabajar con input forms y JSON)
+// estableciendo body-parser (para poder trabajar con datos de input forms como JSON)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -84,15 +84,7 @@ app.get('/shapefile', (req, res) => res.render('pages/shapefile'));
 
 // servicio REST/JSON que responde un GeoJSON
 app.get('/get-geojson', (req, res) => {
-    shapefile.open("./shapefiles/ruta - linea 130.shp")
-        .then((source) => source.read()
-            .then(function log(result) {
-                if (result.done) return;
-                console.log(JSON.stringify(result.value));
-                res.send(result.value);
-                return source.read().then(log);
-            }))
-        .catch((error) => console.error(error.stack));
+  shapefileRequestHandler(req,res);
 });
 
 /* ======================================================= */
@@ -113,37 +105,33 @@ app.get('/tracking', (req, res) => {
 const io = require('socket.io')(server);
 
 // espacio de nombres "tech"
-const techNsp = io.of('/tech');
+const nsp = io.of('/tech');
 
 // escuchar como servidor
-techNsp.on('connection', (socket) => {
+nsp.on('connection', (socket) => {
     socket.on('join', (data) => {
         console.log(`user joined: ${data.uname}@${data.room}`);
         socket.join(data.room);
-        techNsp.in(data.room).emit('message', `El usuario ${data.uname} se ha unido a la sala ${data.room}!`);
+        nsp.in(data.room).emit('message', `El usuario ${data.uname} se ha unido a la sala ${data.room}!`);
     });
 
     // registrar el mensaje recibido en la consola y emitir a todos
     // los clientes conectados a la misma sala
     socket.on('message', (obj) => {
         console.log(`[MSG] Received in "${obj.room}" from "${obj.uname}": "${obj.msg}"`);
-        techNsp.in(obj.room).emit('message', `${obj.uname} says: ${obj.msg}`);
+        nsp.in(obj.room).emit('message', `${obj.uname} says: ${obj.msg}`);
     });
 
-    /*  data: {
-            room: 'tracking',
-            pointLatLon: {lat: -17.x, lon: -63.x}
-        }
-    */
+    // data: { room: 'tracking', pointLatLon: {lat: -17.x, lon: -63.x}
     socket.on('location',(data)=>{
-        techNsp.in(data.room).emit('location',data.pointLatLon);
+        nsp.in(data.room).emit('location',data.pointLatLon);
     });
 
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
-        // emit as server (to whole namespace)
-        techNsp.emit('message', 'user disconnected');
+        // emitir a todo el namespace
+        nsp.emit('message', 'user disconnected');
     });
 });
 
@@ -159,10 +147,17 @@ app.get('*', (req, res) => {
 // ===================================================
 
 
-
-
-
-
+function shapefileRequestHandler(req,res){
+  shapefile.open("./shapefiles/ruta - linea 130.shp")
+  .then((source) => source.read()
+      .then(function log(result) {
+          if (result.done) return;
+          console.log('Shapefile procesado a GeoJson!');
+          res.send(result.value);
+          return source.read().then(log);
+      }))
+  .catch((error) => console.error(error.stack));
+}
 
 
 /**
