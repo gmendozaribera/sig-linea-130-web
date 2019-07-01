@@ -1,6 +1,9 @@
 ## vscode
 .vscode
 
+# shapefiles
+shapefiles/*
+
 ############## by heroku
 # Local development
 *.env
