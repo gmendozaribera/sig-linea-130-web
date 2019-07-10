@@ -10,13 +10,15 @@ const shapefile = require('shapefile');       // para leer shapefiles
 const session = require('express-session');   // manejo de sesiones en express
 const passport = require('passport');         // lib para estrategias de inicio de sesión
 const LocalStrategy = require('passport-local').Strategy;   // estrategia de inicio de sesión local de passport
+const procesadorShapefile = require('./procesador-shapefile');    // mi procesador de shapefiles :v
+const models = require('./models');           //  los modelos Sequelize ORM
 
 // algunas variables de entorno.
 // TO DO: mover a .env y leer a través de "process.env.VARIABLE"
 const http_port = 5000;
 const pg_port = 7775;
 const logfile_path = "./log.txt";
-const app_secret = 'itsrainingcatsanddogs';
+const app_secret = process.env.APP_SECRET;
 
 // instanciado de Express (establecimiento del HTTP request handler)
 const app = express();
@@ -26,13 +28,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
-app.use(session({ secret: app_secret }));
+app.use(session({ secret: app_secret, resave: true, saveUninitialized: false }));
 app.use(express.static(path.join(__dirname, 'public'))); // configuración del directorio público
-app.use(bodyParser.json()); // configurar body-parser
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+/*  TO DO: autenticar usuarios en esta sección */
 passport.use(new LocalStrategy(
   function (username, password, done) {
     if (username == 'admin' && password == 'admin') {
@@ -43,14 +46,20 @@ passport.use(new LocalStrategy(
   })
 );
 
+
 passport.serializeUser(function (user, done) {
   done(null, JSON.stringify(user));
 });
 
+/*
+    TO DO: obtener los credenciales del usuario, usarlos para hacer un select
+    en la base de datos y obtener los datos completos del usuario
+*/
 passport.deserializeUser(function (user, done) {
   done(null, JSON.parse(user));
 });
 
+//  establecer un pequeño middleware que escribe las solicitudes a la consola
 app.use(function (request, response, next) {
   console.log('URL: ' + request.url);
   next();
@@ -73,13 +82,18 @@ app.post('/login', passport.authenticate('local', {
 
 // llamar esto en todas las rutas que requieran autenticación
 var isAuthenticated = function (req, res, next) {
-  if (req.isAuthenticated()) return next();
+  if (req.isAuthenticated()) {
+    if (req.path == '/login') {
+      res.redirect('/');
+    }
+    return next();
+  }
   res.redirect('/login');
 }
 
 // rutas de signup
 app.get('/signup', (req, res) => res.render('pages/signup/signup-form'));
-app.post('/signup',(req,res) => {
+app.post('/signup', (req, res) => {
   console.log(JSON.stringify(req.body));
   console.log(req.body.username);
   console.log(req.body.password);
@@ -89,7 +103,10 @@ app.post('/signup',(req,res) => {
 app.get('/signup/verify', (req, res) => res.render('pages/signup/verify'));
 
 // rutas de faq
-app.get('/faq', (req, res) => res.render('pages/faq/index'));
+app.get('/faq', (req, res) => {
+  faq = fs.readFileSync('./faq.json').toString();
+  res.render('pages/faq', { faq: JSON.parse(faq) })
+});
 
 // rutas de forgot-password
 app.get('/forgot-password', (req, res) => res.render('pages/forgot-password/request-form'));
@@ -97,21 +114,89 @@ app.get('/forgot-password/request-form', (req, res) => res.render('pages/forgot-
 app.get('/forgot-password/verify', (req, res) => res.render('pages/forgot-password/verify'));
 app.get('/forgot-password/confirm', (req, res) => res.render('pages/forgot-password/confirm'));
 
+//  rutas sobre gestión de propietarios de buses (autenticar)
+app.get('/propietario/index', (req, res) => {
+  models.Propietario.findAll({order: [['propietario_id','ASC']]})
+    .then((results) => {
+      res.render('pages/propietario/index', {propietarios: results});
+    }).catch((error) => {
+      log(error.message);
+    });
+});
+app.get('/propietario/', (req, res) => { res.redirect('/propietario/index/') });
+app.get('/propietario/create', (req, res) => { res.render('pages/propietario/create') });
+app.get('/propietario/view/:id', (req, res) => { res.render('pages/propietario/view') });
+app.get('/propietario/update/:id', (req, res) => { res.render('pages/propietario/update') });
 
 // rutas sobre gestion de choferes (autenticar)
+app.get('/chofer/index', (req, res) => {
+  models.Chofer.findAll({order: [['chofer_id','ASC']]})
+    .then((results) => {
+      res.render('pages/chofer/index', {choferes: results});
+    }).catch((error) => {
+      log(error.message);
+    });
+});
+app.get('/chofer/', (req, res) => { res.redirect('/chofer/index') });
+app.get('/chofer/create', (req, res) => { res.render('pages/chofer/create') });
+app.post('/chofer/create/', (req,res) => {
+  console.log(req.body);
+  res.redirect('/chofer/');
+});
+app.get('/chofer/view/:id', (req, res) => {
+  models
+  res.render('pages/chofer/view', {
 
+  }) });
+app.get('/chofer/update/:id', (req, res) => { res.render('pages/chofer/update') });
 
 // rutas sobre gestión de micros (autenticar)
+app.get('/micro/index', (req, res) => {
+  res.render('pages/micro/index', {
+    micros: [
+      {
+        bus_id: 1,
+        placa_pta: '1568-GAY',
+        cod_chasis: 'invalid_vin',
+        marca: 'Toyota',
+        modelo: 'Coaster',
+        anio: 2003
+      }
+    ]
+  })
+});
+app.get('/micro/', (req, res) => { res.redirect('/micro/index/') });
+app.get('/micro/create', (req, res) => { res.render('pages/micro/create') });
+app.get('/micro/view/:id', (req, res) => { res.render('pages/micro/view') });
+app.get('/micro/update/:id', (req, res) => { res.render('pages/micro/update') });
+
+// rutas sobre multas o sanciones (autenticar)
+app.get('/multa/', (req, res) => { res.redirect('/multa/index/') });
+app.get('/multa/index', (req, res) => { res.render('pages/multa/index/') });
+app.get('/multa/create', (req, res) => { res.render('pages/multa/create') });
+app.get('/multa/view/:id', (req, res) => { res.render('pages/multa/view') });
 
 
 // rutas sobre gestión de las rutas de transporte (autenticar)
-
+app.get('/ruta/', (req, res) => { res.redirect('/ruta/index') });
+app.get('/ruta/index', (req, res) => { res.render('pages/ruta/index') });
+app.get('/ruta/create', (req, res) => { res.render('pages/ruta/index') });
+app.get('/ruta/view/:id', (req, res) => { res.render('pages/ruta/index') });
+app.get('/ruta/update/:id', (req, res) => { res.render('pages/ruta/index') });
 
 // rutas sobre gestión de puntos de control (autenticar)
-
+app.get('/punto-control/', (req, res) => { res.redirect('punto-control/index') });
+app.get('/punto-control/index', (req, res) => { res.render('pages/punto-control/index') });
+app.get('/punto-control/create', (req, res) => { res.render('pages/punto-control/index') });
+app.get('/punto-control/view/:id', (req, res) => { res.render('pages/punto-control/index') });
+app.get('/punto-control/update/:id', (req, res) => { res.render('pages/punto-control/index') });
 
 // rutas sobre gestión de asistencia, retrasos, multas, etc (autenticar)
-
+app.get('/control-asistencia/', (req, res) => { res.redirect('/control-asistencia/index') }); // redirigir a la pagina de registro de asistencia si es un chofer
+app.get('/control-asistencia/registrar', (req, res) => { res.render('pages/control-asistencia/index') }); // equivalente al marcado de tarjeta
+app.get('/control-asistencia/index', (req, res) => { res.render('pages/control-asistencia/index') });
+app.get('/control-asistencia/view/:id', (req, res) => { res.render('pages/control-asistencia/index') });
+app.get('/control-asistencia/update/:id', (req, res) => { res.render('pages/control-asistencia/index') });
 
 
 // levantar servidor, escuchando en el puerto anteriormente establecido
@@ -120,15 +205,20 @@ const server = app.listen(http_port, () => {
 });
 
 /* ======================================================= */
-/* =================== shapefile demo ==================== */
+/* ===================== shapefiles ====================== */
 /* ======================================================= */
+
+console.log('Shapefiles disponibles: ');
+console.log(procesadorShapefile.shpPathsArr());
 
 // página para mostrar el mapa
 app.get('/shapefile', (req, res) => res.render('pages/shapefile'));
 
-// servicio REST/JSON que responde un GeoJSON
-app.get('/get-geojson', (req, res) => {
-  shapefileRequestHandler(req, res);
+// servicio REST/JSON que responde un array de GeoJSON
+app.get('/get-geojson/:filename', (req, res) => {
+  procesadorShapefile.shpToGeoJsonArr(req.params.filename, (geoJsonArr) => {
+    res.send(geoJsonArr);
+  });
 });
 
 /* ======================================================= */
@@ -191,19 +281,6 @@ app.get('*', (req, res) => {
 // ===================================================
 
 
-function shapefileRequestHandler(req, res) {
-  shapefile.open("./shapefiles/ruta - linea 130.shp")
-    .then((source) => source.read()
-      .then(function log(result) {
-        if (result.done) return;
-        console.log('Shapefile procesado a GeoJson!');
-        res.send(result.value);
-        return source.read().then(log);
-      }))
-    .catch((error) => console.error(error.stack));
-}
-
-
 /**
  * Registra el texto pasado como parámetro tanto en la consola como
  * en el archivo de texto referenciado por 'logfile_path'
@@ -216,7 +293,7 @@ function log(text) {
   console.log(text);
   fs.appendFile(logfile_path, log_text, (err) => {
     if (err) {
-      console.error('Error al escribir al archivo log: ' + err)
+      console.error('Error al escribir al archivo log: ' + err.message)
     }
   });
 }

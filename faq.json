@@ -1,0 +1,24 @@
+{
+  "faq": [
+    {
+      "q": "¿Cada cuanto salen los micros de esta línea?",
+      "a": "Los micros salen de la parada cada 30 minutos."
+    },
+    {
+      "q": "¿Cuánto tardan los micros en completar su ruta?",
+      "a": "Los micros recorren su ruta, ya sea de ida o de vuelta, en aproximadamente 1 hora y 45 minutos (~1:45:00)"
+    },
+    {
+      "q": "¿Por qué lugares de interés pasan los micros?",
+      "a": "A,B,C,D,E,F,...,Z."
+    },
+    {
+      "q": "¿En dónde se encuentra la parada de la línea?",
+      "a": "Las paradas de la línea se encuentran en: A,B."
+    },
+    {
+      "q": "¿De qué color son los micros de la línea?",
+      "a": "No sé :v"
+    }  
+  ]
+}

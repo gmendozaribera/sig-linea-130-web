@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+  <link type="text/css" href="/css/leaflet.css" rel="stylesheet">
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Lista de Micros</h2>
+            <hr>
+            <a href="/micro/create" class="btn btn-primary">Registrar nuevo micro</a>
+            <hr>
+            <table class="table table-bordered">
+              <tr>
+                <th>Placa</th>
+                <th>Codigo de Chasis</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Año</th>
+                <th>Acciones</th>
+              </tr>           
+              <% micros.forEach( (micro) => { %>
+                <tr>
+                  <td><%= micro.placa_pta %></td>
+                  <td><%= micro.cod_chasis %></td>
+                  <td><%= micro.marca %></td>
+                  <td><%= micro.modelo %></td>
+                  <td><%= micro.anio %></td>
+                  <td>
+                    <!-- Ver | Editar | Eliminar -->
+                    <a href="/micro/view/<%= micro.bus_id %>">Ver</a> |
+                    <a href="/micro/update/<%= micro.bus_id %>">Modificar</a> |
+                    <a href="#">Eliminar</a>
+                  </td>
+                </tr>
+              <% }); %>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- row -->
+
+  </div> <!-- container -->
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

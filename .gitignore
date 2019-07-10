@@ -4,6 +4,9 @@
 # shapefiles
 shapefiles/*
 
+# database playground/scratchpad
+db.js
+
 ############## by heroku
 # Local development
 *.env

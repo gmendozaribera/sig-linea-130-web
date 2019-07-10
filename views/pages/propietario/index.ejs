@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-md-12">
+        <br>
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Lista de Propietarios</h2>
+            <hr>
+            <a href="/propietario/create" class="btn btn-primary">Registrar nuevo propietario</a>
+            <hr>
+            <table class="table table-bordered">
+              <tr>
+                <th>Cédula de Identidad</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Fecha de Registro</th>
+                <th>Acciones</th>
+              </tr>
+              <% propietarios.forEach( (propietario) => { %>
+              <tr>
+                <td><%= propietario.ci %></td>
+                <td><%= propietario.nombres %></td>
+                <td><%= propietario.apellidos %></td>
+                <td><%= propietario.fecha_registro %></td>
+                <td>
+                  <!-- Ver | Editar | Eliminar -->
+                  <a href="/propietario/view/<%= propietario.propietario_id %>">Ver</a> |
+                  <a href="/propietario/update/<%= propietario.propietario_id %>">Modificar</a> |
+                  <a href="#">Eliminar</a>
+                </td>
+              </tr>
+              <% }); %>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- row -->
+
+  </div> <!-- container -->
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

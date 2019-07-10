@@ -19,11 +19,6 @@
         <img src="/lang-logo.png">
       </a>
       <h1>Gestión de la Linea de Micros 130</h1>
-      <!--
-      <p>Esta es una aplicación basada en el ejemplo de NodeJS de Heroku.</p>
-      <a type="button" class="btn btn-lg btn-primary" href="/login"><span class="oi oi-account-login"></span> Iniciar sesión</a>
-      <a type="button" class="btn btn-lg btn-secondary" href="/signup"><span class="oi oi-flash"></span> Crear una cuenta</a>
-      -->
     </div>
   </div>
 
@@ -46,6 +41,17 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title"><span class="oi oi-map" style="color: darkgreen"></span> Mapa</h5>
+            <hr>
+            <button class="btn btn-danger" onclick="cargarRutaIda()">
+              Cargar ruta de ida</button>
+            <button class="btn btn-success" onclick="cargarRutaVuelta()">
+              Cargar ruta de vuelta</button>
+            <button class="btn btn-secondary" onclick="cargarParadasIda()">
+              Cargar paradas de ida</button>
+            <button class="btn btn-secondary" onclick="cargarParadasVuelta()">
+              Cargar paradas de vuelta</button>
+            <button class="btn btn-secondary" onclick="cargarPuntosControl()">
+              Cargar puntos de control</button>
             <hr>
             <!-- el mapa Leaflet se renderiza aquí -->
             <div class="map" id="map" style="width: 100%; height: 500px"></div>
@@ -78,28 +84,55 @@
 
     // --------------------- ajax request --------------------
 
-    ajaxGetRequest('http://localhost:5000/get-geojson', (geoJson) => {
-      L.geoJSON(geoJson.geometry).addTo(map);
-    });
+    /*  
+     *  Obtiene las caracteristicas de un shapefile especificado como array y las carga
+     *  a la instancia del mapa especificado.
+     * 
+     *  filename: el nombre del archivo a ser obtenido via una peticion ajax
+     *  mapInstance: la instancia del mapa a la cual agregar las caracteristicas
+     *  
+     */
+    function loadShpToMap(filename, mapInstance, color = 'blue') {
+      try {
+        const options = {
+          style: function (feature) {
+            return { color: color }
+          }
+        };
+        ajaxGetRequest(`http://localhost:5000/get-geojson/${filename}`, (geoJsonArr) => {
+          for (i = 0; i < geoJsonArr.length; i++) {
+            L.geoJSON(geoJsonArr[i].geometry, options).addTo(mapInstance);
+          }
+        });
+      } catch (error) {
+        console.error('Se ha producido un error: \n' + error);
+      }
+    }
 
-    /* TO DO:
+
+    //  ============================
+    //  funciones de los botones :v
+    //  ============================
     function cargarRutaIda() {
-
+      loadShpToMap('linea_130_ruta_ida', map, 'red');
     }
 
     function cargarRutaVuelta() {
-
+      loadShpToMap('linea_130_ruta_vuelta', map, 'green');
     }
 
-    function cargarParadas() {
+    function cargarParadasIda() {
+      loadShpToMap('linea_130_paradas_ida', map);
+    }
 
-
+    function cargarParadasVuelta() {
+      loadShpToMap('linea_130_paradas_vuelta', map);
     }
 
     function cargarPuntosControl() {
-
+      loadShpToMap('linea_130_puntos_de_control', map);
     }
-    */
+
 
   </script>
 </body>

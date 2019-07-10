@@ -34,29 +34,15 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Lista de Viajes</h5>
+            <h5 class="card-title"><span class="oi oi-question-mark" style="color: darkgreen"></span>
+              Preguntas Frecuentes (F.A.Q.)</h5>
             <hr>
-            <table class="table table-bordered">
-              <tr>
-                <th>Fecha y hora de Inicio</th>
-                <th>Fecha y hora de Fin</th>
-                <th>Monto Recaudado</th>
-                <th>Acciones</th>
-              </tr>
-              <% viajes.forEach( (viaje) => { %>
-              <tr>
-                <td><%= viaje.tiempo_inicio %></td>
-                <td><%= viaje.tiempo_fin %></td>
-                <td><%= viaje.monto_recaudado %></td>
-                <td>
-                  <!-- Ver | Editar | Eliminar -->
-                  <a href="/viaje/view/<%= viaje.propietario_id %>">Ver</a> |
-                  <a href="/viaje/update/<%= viaje.propietario_id %>">Modificar</a> |
-                  <a href="#">Eliminar</a>
-                </td>
-              </tr>
-              <% }); %>
-            </table>
+            <% faq.faq.forEach( (tema) => { %>
+              <h3><%= tema.q %></h3>
+              <p><%= tema.a %></p>
+              <hr>
+            <% }); %>
+            </p>
           </div>
         </div>
       </div>

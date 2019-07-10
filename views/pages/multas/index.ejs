@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../partials/nav.ejs %>
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><span class="oi oi-question-mark" style="color: darkgreen"></span>
+              Lista de Multas Aplicadas</h5>
+            <hr>
+            <table class="table table-bordered">
+              <tr>
+                <th>Fecha de Emision</th>
+                <th>Concepto de la multa</th>
+                <th>Monto</th>
+              </tr>           
+              <% multas.forEach( (multa) => { %>
+                <tr>
+                  <td><%= multa.fecha_multa %></td>
+                  <td><%= multa.concepto %></td>
+                  <td><%= multa.monto %></td>
+                  <td>
+                      <!-- Ver | Editar | Eliminar -->
+                      <a href="/multa/view/<%= multa.multa_id %>">Ver</a> |
+                      <a href="/multa/update/<%= multa.multa_id %>">Modificar</a> |
+                      <a href="#">Eliminar</a>
+                    </td>
+                </tr>
+              <% }); %>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- row -->
+
+  </div> <!-- container -->
+  <% include ../partials/footer.ejs %>
+</body>
+
+</html>
