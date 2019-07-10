@@ -39,6 +39,10 @@ module.exports = function (sequelize, DataTypes) {
     direccion_domicilio: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    fecha_registro: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   },{
     // objeto "options"

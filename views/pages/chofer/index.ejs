@@ -33,7 +33,7 @@
                   <td><%= chofer.ci %></td>
                   <td><%= chofer.nombres %></td>
                   <td><%= chofer.apellidos %></td>
-                  <td><%= chofer.fecha_registro %></td>
+                  <td><%= chofer.fecha_registro || 'No especificado' %></td>
                   <td>
                     <!-- Ver | Editar | Eliminar -->
                     <a href="/chofer/view/<%= chofer.chofer_id %>">Ver</a> |
