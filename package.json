@@ -4,6 +4,7 @@
   "description": "Servidor web y proveedor de API REST para las aplicaciones clientes para gestionar la línea de micros 130",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"error: no test command found\\n\""
   },
   "repository": {
@@ -69,5 +70,6 @@
     "sequelize": "^5.9.4",
     "shapefile": "^0.6.6",
     "socket.io": "^2.2.0"
-  }
+  },
+  "engines": {"node": "10.x"}
 }

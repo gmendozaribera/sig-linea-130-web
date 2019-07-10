@@ -4,9 +4,7 @@ console.log("Iniciando sistema de gestión de la linea 130...");
 const path = require('path');                 // para facilitar el manejo de rutas del sistema de archivos
 const fs = require('fs');                     // para manejo de archivos
 const express = require('express');           // servidor HTTP
-const { Pool } = require('pg');               // conector a PostgreSQL
 const bodyParser = require('body-parser');    // para manejar POST requests (trabajar con datos de input forms como JSON)
-const shapefile = require('shapefile');       // para leer shapefiles
 const session = require('express-session');   // manejo de sesiones en express
 const passport = require('passport');         // lib para estrategias de inicio de sesión
 const LocalStrategy = require('passport-local').Strategy;   // estrategia de inicio de sesión local de passport
@@ -15,9 +13,7 @@ const models = require('./models');           //  los modelos Sequelize ORM
 
 // algunas variables de entorno.
 // TO DO: mover a .env y leer a través de "process.env.VARIABLE"
-const http_port = 5000;
-const pg_port = 7775;
-const logfile_path = "./log.txt";
+const http_port = process.env.PORT || 5000;
 const app_secret = process.env.APP_SECRET;
 
 // instanciado de Express (establecimiento del HTTP request handler)
@@ -116,9 +112,9 @@ app.get('/forgot-password/confirm', (req, res) => res.render('pages/forgot-passw
 
 //  rutas sobre gestión de propietarios de buses (autenticar)
 app.get('/propietario/index', (req, res) => {
-  models.Propietario.findAll({order: [['propietario_id','ASC']]})
+  models.Propietario.findAll({ order: [['propietario_id', 'ASC']] })
     .then((results) => {
-      res.render('pages/propietario/index', {propietarios: results});
+      res.render('pages/propietario/index', { propietarios: results });
     }).catch((error) => {
       log(error.message);
     });
@@ -130,16 +126,16 @@ app.get('/propietario/update/:id', (req, res) => { res.render('pages/propietario
 
 // rutas sobre gestion de choferes (autenticar)
 app.get('/chofer/index', (req, res) => {
-  models.Chofer.findAll({order: [['chofer_id','ASC']]})
+  models.Chofer.findAll({ order: [['chofer_id', 'ASC']] })
     .then((results) => {
-      res.render('pages/chofer/index', {choferes: results});
+      res.render('pages/chofer/index', { choferes: results });
     }).catch((error) => {
       log(error.message);
     });
 });
 app.get('/chofer/', (req, res) => { res.redirect('/chofer/index') });
 app.get('/chofer/create', (req, res) => { res.render('pages/chofer/create') });
-app.post('/chofer/create/', (req,res) => {
+app.post('/chofer/create/', (req, res) => {
   console.log(req.body);
   res.redirect('/chofer/');
 });
@@ -147,7 +143,8 @@ app.get('/chofer/view/:id', (req, res) => {
   models
   res.render('pages/chofer/view', {
 
-  }) });
+  })
+});
 app.get('/chofer/update/:id', (req, res) => { res.render('pages/chofer/update') });
 
 // rutas sobre gestión de micros (autenticar)
@@ -284,16 +281,21 @@ app.get('*', (req, res) => {
 /**
  * Registra el texto pasado como parámetro tanto en la consola como
  * en el archivo de texto referenciado por 'logfile_path'
- * @param text el texto a ser registrado en el log
+ * @param {string} text el texto a ser registrado en el log
  */
 function log(text) {
+  const logfile_path = process.env.LOGFILE_PATH;
   // obtener el tiempo en formato: YYYY:MM:DD:HH:MM:SS
   const cur_time = (new Date()).toJSON().slice(0, 19).replace(/[-T]/g, ':');
   const log_text = cur_time + ": " + text + '\n';
   console.log(text);
-  fs.appendFile(logfile_path, log_text, (err) => {
-    if (err) {
-      console.error('Error al escribir al archivo log: ' + err.message)
-    }
-  });
+  if ((logfile_path !== null || logfile_path !== '') && fs.existsSync(logfile_path)) {
+    fs.appendFile(logfile_path, log_text, (err) => {
+      if (err) {
+        console.error('Error al escribir al archivo log: ' + err.message)
+      }
+    });
+  }else{
+    console.log('Nota: "LOGFILE_PATH" no especificado o archivo no existente.');
+  }
 }
