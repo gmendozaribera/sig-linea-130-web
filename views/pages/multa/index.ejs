@@ -2,12 +2,12 @@
 <html>
 
 <head>
-  <% include ../partials/header.ejs %>
+  <% include ../../partials/header.ejs %>
 </head>
 
 <body style="background-color: beige">
 
-  <% include ../partials/nav.ejs %>
+  <% include ../../partials/nav.ejs %>
 
   <br>
   <div class="container">
@@ -17,20 +17,25 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title"><span class="oi oi-question-mark" style="color: darkgreen"></span>
+            <h5 class="card-title">
               Lista de Multas Aplicadas</h5>
+            <hr>
+            <a href="/multa/create" class="btn btn-primary">Registrar nueva multa</a>
             <hr>
             <table class="table table-bordered">
               <tr>
                 <th>Fecha de Emision</th>
+                <th>Chofer multado</th>
                 <th>Concepto de la multa</th>
                 <th>Monto</th>
+                <th>Acciones</th>
               </tr>
               <% multas.forEach( (multa) => { %>
               <tr>
                 <td><%= multa.fecha_multa %></td>
+                <td><%= `${multa.chofer.nombres} ${multa.chofer.apellidos} (${multa.chofer.ci})`  %></td>
                 <td><%= multa.concepto %></td>
-                <td><%= multa.monto %></td>
+                <td>Bs. <%= multa.monto %></td>
                 <td>
                   <!-- Ver | Editar | Eliminar -->
                   <a href="/multa/view/<%= multa.multa_id %>">Ver</a> |
@@ -47,7 +52,7 @@
     </div><!-- row -->
 
   </div> <!-- container -->
-  <% include ../partials/footer.ejs %>
+  <% include ../../partials/footer.ejs %>
 </body>
 
 </html>

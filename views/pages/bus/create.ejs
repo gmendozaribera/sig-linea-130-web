@@ -15,42 +15,40 @@
       <div class="col-lg-10">
         <div class="card" id="form-card">
           <div class="card-body">
-            <h3 class="card-title">Registrar Nuevo Micro</h3>
+            <h3 class="card-title">Registrar Nuevo Bus</h3>
             <hr>
-            <form action="action" method="POST">
+            <form action="/bus/create" method="POST">
               <div id="form" class="form-group">
 
                 <label for="txt-placa-pta">Placa (PTA):</label>
                 <input class="form-control" type="text" name="txt-placa-pta" id="txt-placa-pta"
-                  placeholder="Ej: 1568-GBY" required value="<%= bus.placa_pta %>">
+                  placeholder="Ej: 1568-GBY" required />
                 <br>
 
                 <label for="txt-cod-chasis">Código de Chasis:</label>
                 <input class="form-control" type="text" name="txt-cod-chasis" id="txt-cod-chasis"
-                  placeholder="Ej: XXXXXXXXXXXXXXXXXXXXX" required value="<%= bus.cod_chasis %">>
+                  placeholder="Ej: XXXXXXXXXXXXXXXXXXXXX" required />
                 <br>
-  
+
                 <label for=" txt-marca">Marca:</label>
                 <input class="form-control" type="text" name="txt-marca" id="txt-marca" placeholder="Ej: Toyota"
-                  required value="<%= bus.marca %>">
+                  required />
                 <br>
 
                 <label for=" txt-modelo">Modelo:</label>
                 <input class="form-control" type="text" name="txt-modelo" id="txt-modelo" placeholder="Ej: Coaster"
-                  required value="<%= bus.modelo %>">
+                  required />
                 <br>
 
                 <label for=" txt-anio">Año de Fabricación:</label>
-                <input class="form-control" type="text" name="txt-anio" id="txt-anio" placeholder="Ej: 1995" required
-                  value="<%= bus.anio %>">
+                <input class="form-control" type="text" name="txt-anio" id="txt-anio" placeholder="Ej: 1995" required />
                 <br>
 
                 <label for=" txt-fecha-registro">Fecha de Registro:</label>
-                <input class="form-control" type="date" name="txt-fecha-registro" id="txt-fecha-registro"
-                  value="<%= bus.fecha_registro %>">
+                <input class="form-control" type="date" name="txt-fecha-registro" id="txt-fecha-registro" />
                 <br>
 
-                <label for=" sel-propietario">Propietario:</label>
+                <label for="sel-propietario">Propietario:</label>
                 <select name="sel-propietario" id="sel-propietario" class="form-control" required>
                   <option value=""><i>Seleccione una opción</i></option>
                   <!--obtener!-->
@@ -72,6 +70,7 @@
                     <%= `${chofer.nombres} ${chofer.apellidos} (${chofer.ci})` %></option>
                   <% }); %>
                 </select>
+                <br>
 
                 <label for="sel-estado">Estado del Bus:</label>
                 <select name="sel-estado" id="sel-estado" class="form-control">

@@ -66,7 +66,21 @@ function create(req, res) {
         error.message);
     });
   } else {
-    res.render('pages/bus/create');
+    // res.render('pages/bus/create');
+    models.Chofer.findAll().then((choferes) => {
+      console.log(choferes);
+      models.Propietario.findAll().then((propietarios) => {
+        console.log(propietarios);
+        models.EstadoBus.findAll().then((estados) => {
+          console.log(estados);
+          res.render('pages/bus/create', {
+            choferes,
+            propietarios,
+            estados
+          }); 
+        }); // catch estado...
+      }); // catch propietario...
+    }); // catch chofer...
   }
 }
 

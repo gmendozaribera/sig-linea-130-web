@@ -152,10 +152,14 @@ app.get('/bus/update/:id', (req, res) => { busController.update(req, res) });
 app.post('/bus/update/', (req, res) => { busController.update(req, res) });
 
 // rutas sobre multas o sanciones (autenticar)
+const multaController = require('./controllers/multa');
 app.get('/multa/', (req, res) => { res.redirect('/multa/index/') });
-app.get('/multa/index', (req, res) => { res.render('pages/multa/index/') });
-app.get('/multa/create', (req, res) => { res.render('pages/multa/create') });
-app.get('/multa/view/:id', (req, res) => { res.render('pages/multa/view') });
+app.get('/multa/index/', (req, res) => { multaController.index(req,res) });
+app.get('/multa/view/:id', (req, res) => { multaController.view(req,res) });
+app.get('/multa/create/', (req, res) => { multaController.create(req,res) });
+app.post('/multa/create/', (req, res) => { multaController.create(req,res) });
+app.get('/multa/update/:id', (req, res) => { multaController.update(req,res) });
+app.post('/multa/update/', (req, res) => { multaController.update(req,res) });
 
 
 // rutas sobre gestión de las rutas de transporte (autenticar)
@@ -219,6 +223,9 @@ let chatSockets = [];
 
 // escuchar al namespace "chat"
 chatNsp.on('connection', (chatSocket) => {
+
+  chatSockets.push(chatSocket);
+
   chatSocket.on('join', (data) => {
     console.log(`Usuario: ${data.uname} conectado a la sala: ${data.room}`);
     chatSocket.join(data.room);
@@ -239,31 +246,68 @@ chatNsp.on('connection', (chatSocket) => {
   });
 });
 
-const trackingNsp = io.of('/tracking');         // namespace "tracking"
-let trackingSockets = [];
+/* ======================================================= */
+/* ================= socket.io tracking: ================= */
+/* ======================================================= */
+
+const trackingNsp = io.of('/tracking');   // namespace "tracking"
+let trackingSockets = []; // array que mantiene referencias a los sockets conectados
 let locations = [];
 
-trackingNsp.on('connection', (socket) => {
-  trackingSockets.push(socket);
+function getLocationIndex(locationData) {
+  let result = -1;
+  for (i = 0; i < locations.length; i++) {
+    if (locations[i].bus_id == locationData.bus_id) {
+      result = i;
+      break;
+    }
+  }
+  return result;
+}
 
-    // data: { bus_id: int, pointLatLon: {lat: -17.x, lon: -63.x}
-    socket.on('locationFromBus', (data) => {
-      /*  se debería registrar:
-          - qué bus está haciendo este recorrido?
-          - coordenadas (lat y long)
-          - tiempo
-       */
 
-      trackingNsp.emit('locationFromServer', data);
-    });
+trackingNsp.on('connection', (trackingSocket) => {
 
-    socket.on('allBusesLocationRequest', () => {
-      trackingNsp
-    });
+  // añadir al array de sockets actualmente conectados.
+  trackingSockets.push(trackingSocket);
 
-    trackingNsp.on('disconnect', (reason) => {
+  /* Estructura del objeto "newLocationData":
+    newLocationData = {
+      bus_id: int,
+      coords: {
+        latitude: real,
+        longitude: real
+      }
+    }
+  */
+  trackingSocket.on('locationUpdate', (newLocationData) => {
+    /*  se debería registrar:
+        - qué bus está haciendo este recorrido?
+        - coordenadas (lat y long)
+        - tiempo
+     */
+    let index = getLocationIndex(newLocationData);
+    if (index >= 0) {
+      // update existing
+      locations[index] = newLocationData;
+    } else {
+      // push new data
+      locations.push(newLocationData);
+    }
 
-    });
+    trackingSocket.broadcast.emit('locationUpdate', newLocationData); // emite la información a todo el namespace
+  });
+
+  trackingSocket.on('allLocationsRequest', () => {
+    // emitir el array de todos los buses solamente al cliente que lo requiere
+    // es decir, no usar un "emit" común ;)
+    trackingSocket.emit('allLocationsResponse', locations); // emite al cliente que envió la solicitud de ubicaciones
+  });
+
+  trackingSocket.on('disconnect', (reason) => {
+    console.log('TrackingSocket disconnected. Reason: ' + reason);
+    trackingSockets.splice(trackingSockets.indexOf(trackingSocket),1);
+  });
 
 });
 

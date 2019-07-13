@@ -21,7 +21,8 @@ module.exports = function(sequelize, DataTypes){
   },{
     // objeto "options"
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    tableName: 'multa'
   });
 
   Multa.associate = function(models){

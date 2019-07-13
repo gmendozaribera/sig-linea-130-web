@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h2 class="card-title">Multa: 
+              <%= `${multa.fecha_multa} para ${multa.chofer.nombres} (${multa.chofer.apellidos} (${multa.chofer.ci}))` %>
+            </h2>
+            <hr>
+            <table class="table table-bordered">
+
+              <tr>
+                <td><b>Fecha de emisión:</b></td>
+                <td><%= multa.fecha_multa %></td>
+              </tr>
+
+              <tr>
+                <td><b>Concepto o justificación:</b></td>
+                <td><%= multa.concepto %></td>
+              </tr>
+
+              <tr>
+                <td><b>Chofer multado:</b></td>
+                <td>
+                  <a href="/chofer/view/<%= multa.chofer.chofer_id %>">
+                    <%= `${multa.chofer.nombres} (${multa.chofer.apellidos} (${multa.chofer.ci}))` %>
+                  </a>
+                </td>
+              </tr>
+
+              <tr>
+                <td><b>Monto de la multa:</b></td>
+                <td>Bs. <%= multa.monto %></td>
+              </tr>
+
+            </table>
+
+            <hr>
+
+            <a href="/multa/update/<%= multa.multa_id %>" class="btn btn-primary">Modificar</a>
+            <a href="#" class="btn btn-danger">Eliminar</a>
+
+          </div> <!-- card-body -->
+        </div> <!-- card -->
+      </div> <!-- col-lg-10 -->
+    </div> <!-- row -->
+  </div> <!-- container -->
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

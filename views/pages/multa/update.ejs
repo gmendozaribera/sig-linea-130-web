@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h3 class="card-title">Modificar multa:
+              <%= `${multa.fecha_multa} para ${multa.chofer.nombres} (${multa.chofer.apellidos} (${multa.chofer.ci}))` %>
+            </h3>
+            <hr>
+            <form action="/multa/update" method="POST">
+              <div id="form" class="form-group">
+
+                <input type="hidden" name="multa_id" value="<%= multa.multa_id %>">
+
+                <label for="concepto">Concepto o justificación:</label>
+                <input class="form-control" type="text" name="concepto" id="txt-concepto"
+                  placeholder="Ej: Falta de asistencia/Abandono de turno" required value="<%= multa.concepto %>" />
+                <br>
+
+                <label for="monto">Monto de la multa:</label>
+                <input class="form-control" type="number" name="monto" id="txt-monto" placeholder="Ej: 100.0" required
+                  value="<%= multa.monto %>" />
+                <br>
+
+                <label for="fecha_multa">Fecha de emisión:</label>
+                <input class="form-control" type="text" name="fecha_multa" id="txt-fecha_multa" required
+                  value="<%= multa.fecha_multa %>" />
+                <br>
+
+                <label for="chofer_id">Chofer:</label>
+                <select name="chofer_id" id="sel-chofer_id" class="form-control" required>
+                  <option value=""><i>Seleccione una opción</i></option>
+                  <!--obtener!-->
+                  <!--tomar en cuenta el valor previamente seleccionado-->
+                  <% choferes.forEach((chofer) => { %>
+                  <option value="<%= chofer.chofer_id %>" <%= multa.chofer_id == chofer.chofer_id ? 'selected' : '' %>>
+                    <%= `${chofer.nombres} ${chofer.apellidos} (${chofer.ci})` %>
+                  </option>
+                  <% }); %>
+                </select>
+
+                <hr>
+
+                <input class="btn btn-primary" type="submit" value="Guardar cambios">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>
