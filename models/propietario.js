@@ -7,10 +7,12 @@ module.exports = function(sequelize, DataTypes){
       autoIncrement: true
     },
     cod_propietario: {
+      // TO DO: cambiar a STRING
       type: DataTypes.INTEGER,
       allowNull: false
     },
     ci: {
+      // TO DO: cambiar a STRING
       type: DataTypes.INTEGER,
       allowNull: false
     },

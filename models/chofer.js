@@ -47,8 +47,14 @@ module.exports = function (sequelize, DataTypes) {
   },{
     // objeto "options"
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    tableName: 'chofer'
   });
+
+  Chofer.associate = function(models){
+    Chofer.hasMany(models.Bus, {foreignKey: 'chofer_id'});
+    Chofer.hasMany(models.Multa, {foreignKey: 'multa_id'});
+  }
 
   return Chofer;
 }

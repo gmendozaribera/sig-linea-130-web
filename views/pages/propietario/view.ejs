@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h2 class="card-title">Propietario: <%= `${propietario.nombres} ${propietario.apellidos} (${propietario.ci})` %></h2>
+            <hr>
+            <table class="table table-bordered">
+
+              <tr>
+                <td><b>Código de propietario:</b></td>
+                <td><%= propietario.cod_propietario %></td>
+              </tr>
+
+              <tr>
+                <td><b>Nombre(s):</b></td>
+                <td><%= propietario.nombres %></td>
+              </tr>
+
+              <tr>
+                <td><b>Apellido(s):</b></td>
+                <td><%= propietario.apellidos %></td>
+              </tr>
+
+              <tr>
+                <td><b>Telefono:</b></td>
+                <td><%= propietario.telefono %></td>
+              </tr>
+
+              <tr>
+                <td><b>Email:</b></td>
+                <% if(propietario.email){%>
+                  <td><a href="mailto:<%= propietario.email %>"></a><%= propietario.email %></td>
+                <% }else{ %>
+                <td><i>No especificado</i></td>
+                <%}%>
+              </tr>
+
+              <tr>
+                <td><b>Dirección del domicilio:</b></td>
+                <td><%= propietario.direccion_domicilio %></td>
+              </tr>
+
+              <tr>
+                <td><b>Fecha de Nacimiento:</b></td>
+                <td><%= propietario.fecha_nacimiento %></td>
+              </tr>
+
+              <tr>
+                <td><b>Fecha de Registro:</b></td>
+                <td><%= propietario.fecha_registro %></td>
+              </tr>
+
+            </table>
+            
+            <hr>
+            
+            <a href="/propietario/update/<%= propietario.propietario_id %>" class="btn btn-primary">Modificar</a>
+            <a href="#" class="btn btn-danger">Eliminar</a>
+
+          </div> <!-- card-body -->
+        </div> <!-- card -->
+      </div> <!-- col-lg-10 -->
+    </div> <!-- row -->
+  </div> <!-- container -->
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

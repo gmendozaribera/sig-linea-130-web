@@ -25,13 +25,13 @@ app.set('view engine', 'ejs');
 
 
 app.use(session({ secret: app_secret, resave: true, saveUninitialized: false }));
-app.use(express.static(path.join(__dirname, 'public'))); // configuración del directorio público
+app.use(express.static(path.join(__dirname, 'public'))); // configuración del directorio público (assets)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-/*  TO DO: autenticar usuarios en esta sección */
+//  TO DO: autenticar usuarios en esta sección, por ahora solamente es una prueba de concepto.
 passport.use(new LocalStrategy(
   function (username, password, done) {
     if (username == 'admin' && password == 'admin') {
@@ -42,15 +42,13 @@ passport.use(new LocalStrategy(
   })
 );
 
-
+//  TO DO: guardar detalles del usuario
 passport.serializeUser(function (user, done) {
   done(null, JSON.stringify(user));
 });
 
-/*
-    TO DO: obtener los credenciales del usuario, usarlos para hacer un select
-    en la base de datos y obtener los datos completos del usuario
-*/
+//  TO DO: obtener los credenciales del usuario, usarlos para hacer un select
+//  en la base de datos y obtener los datos completos del usuario
 passport.deserializeUser(function (user, done) {
   done(null, JSON.parse(user));
 });
@@ -60,24 +58,38 @@ app.use(function (request, response, next) {
   console.log('URL: ' + request.url);
   next();
 });
+
+// levantar servidor, escuchando en el puerto anteriormente establecido
+const server = app.listen(http_port, () => {
+  console.log(`Servidor escuchando en el puerto ${http_port}`)
+});
+
+// manejar la señal de terminación del programa
+process.on('SIGTERM', () => {
+  console.log('Shutting down...');
+  server.close(() => {
+    console.log('Express HTTP server: Process terminated');
+  });
+});
+
 // ===================================================
 // ============= CONFIGURACIÓN DE RUTAS ==============
 // ===================================================
 
 // homepage con información sobre el servicio
-app.get('/', (req, res) => res.render('pages/index')); // done
-app.get('/index', (req, res) => res.render('pages/index')); // done
+app.get('/', (req, res) => res.render('pages/index'));
+app.get('/index', (req, res) => res.render('pages/index'));
 
 // rutas de login
-app.get('/login', (req, res) => res.render('pages/login/login-form')); // ui done
+app.get('/login', (req, res) => res.render('pages/login/login-form'));
 app.post('/login', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login',
-  //failureFlash: true
+  //failureFlash: true // provoca excepción de método no implementado :(
 }));
 
 // llamar esto en todas las rutas que requieran autenticación
-var isAuthenticated = function (req, res, next) {
+const isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) {
     if (req.path == '/login') {
       res.redirect('/');
@@ -111,61 +123,33 @@ app.get('/forgot-password/verify', (req, res) => res.render('pages/forgot-passwo
 app.get('/forgot-password/confirm', (req, res) => res.render('pages/forgot-password/confirm'));
 
 //  rutas sobre gestión de propietarios de buses (autenticar)
-app.get('/propietario/index', (req, res) => {
-  models.Propietario.findAll({ order: [['propietario_id', 'ASC']] })
-    .then((results) => {
-      res.render('pages/propietario/index', { propietarios: results });
-    }).catch((error) => {
-      log(error.message);
-    });
-});
+const propietarioController = require('./controllers/propietario');
 app.get('/propietario/', (req, res) => { res.redirect('/propietario/index/') });
-app.get('/propietario/create', (req, res) => { res.render('pages/propietario/create') });
-app.get('/propietario/view/:id', (req, res) => { res.render('pages/propietario/view') });
-app.get('/propietario/update/:id', (req, res) => { res.render('pages/propietario/update') });
+app.get('/propietario/index', (req, res) => { propietarioController.index(req, res) });
+app.get('/propietario/create', (req, res) => { propietarioController.create(req, res) });
+app.post('/propietario/create', (req, res) => { propietarioController.create(req, res) });
+app.get('/propietario/view/:id', (req, res) => { propietarioController.view(req, res) });
+app.get('/propietario/update/:id', (req, res) => { propietarioController.update(req, res) });
+app.post('/propietario/update/', (req, res) => { propietarioController.update(req, res) });
 
 // rutas sobre gestion de choferes (autenticar)
-app.get('/chofer/index', (req, res) => {
-  models.Chofer.findAll({ order: [['chofer_id', 'ASC']] })
-    .then((results) => {
-      res.render('pages/chofer/index', { choferes: results });
-    }).catch((error) => {
-      log(error.message);
-    });
-});
+const choferController = require('./controllers/chofer');
 app.get('/chofer/', (req, res) => { res.redirect('/chofer/index') });
-app.get('/chofer/create', (req, res) => { res.render('pages/chofer/create') });
-app.post('/chofer/create/', (req, res) => {
-  console.log(req.body);
-  res.redirect('/chofer/');
-});
-app.get('/chofer/view/:id', (req, res) => {
-  models
-  res.render('pages/chofer/view', {
+app.get('/chofer/index/', (req, res) => { choferController.index(req, res) });
+app.get('/chofer/create/', (req, res) => { choferController.create(req, res) });
+app.post('/chofer/create/', (req, res) => { choferController.create(req, res) });
+app.get('/chofer/view/:id', (req, res) => { choferController.view(req, res) });
+app.get('/chofer/update/:id', (req, res) => { choferController.update(req, res) });
+app.post('/chofer/update/', (req, res) => { choferController.update(req, res) });
 
-  })
-});
-app.get('/chofer/update/:id', (req, res) => { res.render('pages/chofer/update') });
-
-// rutas sobre gestión de micros (autenticar)
-app.get('/micro/index', (req, res) => {
-  res.render('pages/micro/index', {
-    micros: [
-      {
-        bus_id: 1,
-        placa_pta: '1568-GAY',
-        cod_chasis: 'invalid_vin',
-        marca: 'Toyota',
-        modelo: 'Coaster',
-        anio: 2003
-      }
-    ]
-  })
-});
-app.get('/micro/', (req, res) => { res.redirect('/micro/index/') });
-app.get('/micro/create', (req, res) => { res.render('pages/micro/create') });
-app.get('/micro/view/:id', (req, res) => { res.render('pages/micro/view') });
-app.get('/micro/update/:id', (req, res) => { res.render('pages/micro/update') });
+// rutas sobre gestión de buses/micros (autenticar)
+const busController = require('./controllers/bus');
+app.get('/bus/', (req, res) => { res.redirect('/bus/index/') });
+app.get('/bus/index/', (req, res) => { busController.index(req, res) });
+app.get('/bus/create/', (req, res) => { busController.create(req, res) });
+app.get('/bus/view/:id', (req, res) => { busController.view(req, res) });
+app.get('/bus/update/:id', (req, res) => { busController.update(req, res) });
+app.post('/bus/update/', (req, res) => { busController.update(req, res) });
 
 // rutas sobre multas o sanciones (autenticar)
 app.get('/multa/', (req, res) => { res.redirect('/multa/index/') });
@@ -195,11 +179,6 @@ app.get('/control-asistencia/index', (req, res) => { res.render('pages/control-a
 app.get('/control-asistencia/view/:id', (req, res) => { res.render('pages/control-asistencia/index') });
 app.get('/control-asistencia/update/:id', (req, res) => { res.render('pages/control-asistencia/index') });
 
-
-// levantar servidor, escuchando en el puerto anteriormente establecido
-const server = app.listen(http_port, () => {
-  console.log(`Servidor escuchando en el puerto ${http_port}`)
-});
 
 /* ======================================================= */
 /* ===================== shapefiles ====================== */
@@ -232,38 +211,60 @@ app.get('/tracking', (req, res) => {
   res.render('pages/tracking');
 });
 
-// handler de socket.io (requiere instanciar con un servidor http)
-const io = require('socket.io')(server);
 
-// espacio de nombres "tech"
-const nsp = io.of('/tech');
+const io = require('socket.io')(server);    // handler de socket.io (requiere instanciar con un servidor http)
 
-// escuchar como servidor
-nsp.on('connection', (socket) => {
-  socket.on('join', (data) => {
-    console.log(`user joined: ${data.uname}@${data.room}`);
-    socket.join(data.room);
-    nsp.in(data.room).emit('message', `El usuario ${data.uname} se ha unido a la sala ${data.room}!`);
+const chatNsp = io.of('/chat');                 // namespace "chat"
+let chatSockets = [];
+
+// escuchar al namespace "chat"
+chatNsp.on('connection', (chatSocket) => {
+  chatSocket.on('join', (data) => {
+    console.log(`Usuario: ${data.uname} conectado a la sala: ${data.room}`);
+    chatSocket.join(data.room);
+    chatNsp.in(data.room).emit('messageFromServer', `El usuario ${data.uname} se ha conectado!`);
   });
 
   // registrar el mensaje recibido en la consola y emitir a todos
   // los clientes conectados a la misma sala
-  socket.on('message', (obj) => {
-    console.log(`[MSG] Received in "${obj.room}" from "${obj.uname}": "${obj.msg}"`);
-    nsp.in(obj.room).emit('message', `${obj.uname} says: ${obj.msg}`);
+  chatSocket.on('messageFromClient', (obj) => {
+    console.log(`[MSG] Mensaje recibido en "${obj.room}" del usuario "${obj.uname}":\n  "${obj.msg}"`);
+    chatNsp.in(obj.room).emit('messageFromServer', `${obj.uname} dice: ${obj.msg}`);
   });
 
-  // data: { room: 'tracking', pointLatLon: {lat: -17.x, lon: -63.x}
-  socket.on('location', (data) => {
-    nsp.in(data.room).emit('location', data.pointLatLon);
-  });
-
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  chatSocket.on('disconnect', (reason) => {
+    console.log('Un usuario se ha desconectado. Razón: ' + reason);
     // emitir a todo el namespace
-    nsp.emit('message', 'user disconnected');
+    chatNsp.emit('message', 'Usuario desconectado');
   });
+});
+
+const trackingNsp = io.of('/tracking');         // namespace "tracking"
+let trackingSockets = [];
+let locations = [];
+
+trackingNsp.on('connection', (socket) => {
+  trackingSockets.push(socket);
+
+    // data: { bus_id: int, pointLatLon: {lat: -17.x, lon: -63.x}
+    socket.on('locationFromBus', (data) => {
+      /*  se debería registrar:
+          - qué bus está haciendo este recorrido?
+          - coordenadas (lat y long)
+          - tiempo
+       */
+
+      trackingNsp.emit('locationFromServer', data);
+    });
+
+    socket.on('allBusesLocationRequest', () => {
+      trackingNsp
+    });
+
+    trackingNsp.on('disconnect', (reason) => {
+
+    });
+
 });
 
 
@@ -295,7 +296,7 @@ function log(text) {
         console.error('Error al escribir al archivo log: ' + err.message)
       }
     });
-  }else{
+  } else {
     console.log('Nota: "LOGFILE_PATH" no especificado o archivo no existente.');
   }
 }

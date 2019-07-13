@@ -24,5 +24,9 @@ module.exports = function(sequelize, DataTypes){
     timestamps: false
   });
 
+  Multa.associate = function(models){
+    Multa.belongsTo(models.Chofer, {foreignKey: 'chofer_id'});
+  }
+
   return Multa;
 }

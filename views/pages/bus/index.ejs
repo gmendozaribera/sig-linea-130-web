@@ -10,6 +10,7 @@
 
   <% include ../../partials/nav.ejs %>
 
+  <br>
   <div class="container">
 
     <div class="row">
@@ -17,9 +18,9 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <h2 class="card-title">Lista de Micros</h2>
+            <h2 class="card-title">Lista de Buses</h2>
             <hr>
-            <a href="/micro/create" class="btn btn-primary">Registrar nuevo micro</a>
+            <a href="/bus/create" class="btn btn-primary">Registrar nuevo bus</a>
             <hr>
             <table class="table table-bordered">
               <tr>
@@ -29,18 +30,18 @@
                 <th>Modelo</th>
                 <th>Año</th>
                 <th>Acciones</th>
-              </tr>           
-              <% micros.forEach( (micro) => { %>
+              </tr>
+              <% buses.forEach( (bus) => { %>
                 <tr>
-                  <td><%= micro.placa_pta %></td>
-                  <td><%= micro.cod_chasis %></td>
-                  <td><%= micro.marca %></td>
-                  <td><%= micro.modelo %></td>
-                  <td><%= micro.anio %></td>
+                  <td><%= bus.placa_pta %></td>
+                  <td><%= bus.cod_chasis %></td>
+                  <td><%= bus.marca %></td>
+                  <td><%= bus.modelo %></td>
+                  <td><%= bus.anio %></td>
                   <td>
                     <!-- Ver | Editar | Eliminar -->
-                    <a href="/micro/view/<%= micro.bus_id %>">Ver</a> |
-                    <a href="/micro/update/<%= micro.bus_id %>">Modificar</a> |
+                    <a href="/bus/view/<%= bus.bus_id %>">Ver</a> |
+                    <a href="/bus/update/<%= bus.bus_id %>">Modificar</a> |
                     <a href="#">Eliminar</a>
                   </td>
                 </tr>

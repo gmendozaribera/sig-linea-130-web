@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h3 class="card-title">Modificar bus: <%= `${bus.marca} ${bus.modelo} (${bus.placa_pta})` %></h3>
+            <hr>
+            <form action="/bus/update" method="POST">
+              <div id="form" class="form-group">
+
+                <input type="hidden" name="bus_id" value="<%= bus.bus_id %>">
+
+                <label for="txt-placa-pta">Placa (PTA):</label>
+                <input class="form-control" type="text" name="txt-placa-pta" id="txt-placa-pta"
+                  placeholder="Ej: 1568-GBY" required value="<%= bus.placa_pta %>">
+                <br>
+
+                <label for="txt-cod-chasis">Código de Chasis:</label>
+                <input class="form-control" type="text" name="txt-cod-chasis" id="txt-cod-chasis"
+                  placeholder="Ej: XXXXXXXXXXXXXXXXXXXXX" required value="<%= bus.cod_chasis %>">
+                <br>
+
+                <label for=" txt-marca">Marca:</label>
+                <input class="form-control" type="text" name="txt-marca" id="txt-marca" placeholder="Ej: Toyota"
+                  required value="<%= bus.marca %>">
+                <br>
+
+                <label for=" txt-modelo">Modelo:</label>
+                <input class="form-control" type="text" name="txt-modelo" id="txt-modelo" placeholder="Ej: Coaster"
+                  required value="<%= bus.modelo %>">
+                <br>
+
+                <label for=" txt-anio">Año de Fabricación:</label>
+                <input class="form-control" type="text" name="txt-anio" id="txt-anio" placeholder="Ej: 1995" required
+                  value="<%= bus.anio %>">
+                <br>
+
+                <label for=" txt-fecha-registro">Fecha de Registro:</label>
+                <input class="form-control" type="date" name="txt-fecha-registro" id="txt-fecha-registro"
+                  value="<%= bus.fecha_registro %>">
+                <br>
+
+                <label for="sel-propietario">Propietario:</label>
+                <select name="sel-propietario" id="sel-propietario" class="form-control" required>
+                  <option value=""><i>Seleccione una opción</i></option>
+                  <!--obtener!-->
+                  <!--tomar en cuenta el valor previamente seleccionado-->
+                  <% propietarios.forEach((propietario) => { %>
+                  <option value="<%= propietario.propietario_id %>"
+                    <%= propietario.propietario_id == bus.propietario_id ? 'selected' : '' %>>
+                    <%= `${propietario.nombres} ${propietario.apellidos} (${propietario.ci})` %></option>
+                  <% }); %>
+                </select>
+                <br>
+
+                <label for="sel-chofer">Chofer:</label>
+                <select name="sel-chofer" id="sel-chofer" class="form-control" required>
+                  <option value=""><i>Seleccione una opción</i></option>
+                  <!--obtener!-->
+                  <!--tomar en cuenta el valor previamente seleccionado-->
+                  <% choferes.forEach((chofer) => { %>
+                  <option value="<%= chofer.chofer_id %>" <%= chofer.chofer_id == bus.chofer_id ? 'selected' : '' %>>
+                    <%= `${chofer.nombres} ${chofer.apellidos} (${chofer.ci})` %></option>
+                  <% }); %>
+                </select>
+                <br>
+
+                <label for="sel-estado">Estado del Bus:</label>
+                <select name="sel-estado" id="sel-estado" class="form-control" required>
+                  <option value=""><i>Seleccione una opción</i></option>
+                  <!--obtener!-->
+                  <!--tomar en cuenta el valor previamente seleccionado-->
+                  <% estados.forEach((estado) => { %>
+                  <option value="<%= estado.estado_bus_id %>"
+                    <%= estado.estado_bus_id == bus.estado_bus_id ? 'selected' : '' %>><%= estado.nombre %></option>
+                  <% }); %>
+                </select>
+
+                <hr>
+
+                <input class="btn btn-primary" type="submit" value="Guardar cambios">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

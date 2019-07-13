@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h3 class="card-title">Modificar propietario: <%= `${propietario.nombres} ${propietario.apellidos} (${propietario.ci})` %></h3>
+            <hr>
+            <form action="/propietario/update" method="POST">
+              <div id="form" class="form-group">
+
+                <input type="hidden" readonly name="propietario_id" value="<%= propietario.propietario_id %>">
+
+                <label for="txt-cod-propietario">Código de propietario:</label>
+                <input type="text" maxlength="10" name="txt-cod-propietario" id="txt-cod-propietario" class="form-control"
+                  placeholder="Ej: 63214569" value="<%= propietario.cod_propietario %>" required>
+                <br>
+
+                <label for="txt-ci-propietario">Cédula de Identidad:</label>
+                <input type="text" maxlength="10" name="txt-ci-propietario" id="txt-ci-propietario" class="form-control"
+                  placeholder="Ej: 63214569" value="<%= propietario.ci %>" required>
+                <br>
+
+                <label for="txt-nombres-propietario">Nombre(s):</label>
+                <input type="text" maxlength="255" name="txt-nombres-propietario" id="txt-nombres-propietario"
+                  class="form-control" placeholder="Ej: Joaquin" value="<%= propietario.nombres %>" required>
+                <br>
+
+                <label for="txt-apellidos-propietario">Apellido(s):</label>
+                <input type="text" maxlength="255" name="txt-apellidos-propietario" id="txt-apellidos-propietario"
+                  class="form-control" placeholder="Ej: Chumacero" value="<%= propietario.apellidos %>" required>
+                <br>
+
+                <label for="txt-fecha-nacimiento-propietario">Fecha de Nacimiento:</label>
+                <input type="date" name="txt-fecha-nacimiento-propietario" id="txt-fecha-nacimiento-propietario"
+                  class="form-control" placeholder="Ej: 1980-01-01" value="<%= propietario.fecha_nacimiento %>" required>
+                <br>
+
+                <label for="txt-telefono-propietario">Teléfono:</label>
+                <input type="text" maxlength="255" name="txt-telefono-propietario" id="txt-telefono-propietario"
+                  class="form-control" placeholder="Ej: 72130254" value="<%= propietario.telefono %>" required>
+                <br>
+
+                <label for="txt-email-propietario">Email:</label>
+                <input type="text" maxlength="255" name="txt-email-propietario" id="txt-email-propietario" class="form-control"
+                  placeholder="Ej: joaquinchumacero@mail.com" value="<%= propietario.email || '' %>">
+                <br>
+
+                <label for="txt-direccion-domicilio-propietario">Dirección del Domicilio:</label>
+                <input type="text" maxlength="255" name="txt-direccion-domicilio-propietario"
+                  id="txt-direccion-domicilio-propietario" class="form-control" placeholder="Ej: Calle Siempreviva #123"
+                  value="<%= propietario.direccion_domicilio %>" required>
+
+                <hr>
+
+                <input class="btn btn-primary" type="submit" value="Guardar cambios">
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

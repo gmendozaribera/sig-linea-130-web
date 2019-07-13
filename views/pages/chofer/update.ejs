@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h3 class="card-title">Modificar chofer: <%= `${chofer.nombres} ${chofer.apellidos} (${chofer.ci})` %></h3>
+            <hr>
+            <form action="/chofer/update" method="POST">
+              <div id="form" class="form-group">
+
+                <input type="hidden" readonly name="chofer_id" value="<%= chofer.chofer_id %>">
+
+                <label for="txt-cod-chofer">Código de Chofer:</label>
+                <input type="text" maxlength="10" name="txt-cod-chofer" id="txt-cod-chofer" class="form-control"
+                  placeholder="Ej: 63214569" value="<%= chofer.cod_chofer %>" required>
+                <br>
+
+                <label for="txt-ci-chofer">Cédula de Identidad:</label>
+                <input type="text" maxlength="10" name="txt-ci-chofer" id="txt-ci-chofer" class="form-control"
+                  placeholder="Ej: 63214569" value="<%= chofer.ci %>" required>
+                <br>
+
+                <label for="txt-nombres-chofer">Nombre(s):</label>
+                <input type="text" maxlength="255" name="txt-nombres-chofer" id="txt-nombres-chofer"
+                  class="form-control" placeholder="Ej: Joaquin" value="<%= chofer.nombres %>" required>
+                <br>
+
+                <label for="txt-apellidos-chofer">Apellido(s):</label>
+                <input type="text" maxlength="255" name="txt-apellidos-chofer" id="txt-apellidos-chofer"
+                  class="form-control" placeholder="Ej: Chumacero" value="<%= chofer.apellidos %>" required>
+                <br>
+
+                <label for="txt-fecha-nacimiento-chofer">Fecha de Nacimiento:</label>
+                <input type="date" name="txt-fecha-nacimiento-chofer" id="txt-fecha-nacimiento-chofer"
+                  class="form-control" placeholder="Ej: 1980-01-01" value="<%= chofer.fecha_nacimiento %>" required>
+                <br>
+
+                <label for="txt-telefono-chofer">Teléfono:</label>
+                <input type="text" maxlength="255" name="txt-telefono-chofer" id="txt-telefono-chofer"
+                  class="form-control" placeholder="Ej: Chumacero" value="<%= chofer.telefono %>" required>
+                <br>
+
+                <label for="txt-email-chofer">Email:</label>
+                <input type="text" maxlength="255" name="txt-email-chofer" id="txt-email-chofer" class="form-control"
+                  placeholder="Ej: joaquinchumacero@mail.com" value="<%= chofer.email || '' %>">
+                <br>
+
+                <label for="txt-direccion-domicilio-chofer">Dirección del Domicilio:</label>
+                <input type="text" maxlength="255" name="txt-direccion-domicilio-chofer"
+                  id="txt-direccion-domicilio-chofer" class="form-control" placeholder="Ej: Chumacero"
+                  value="<%= chofer.direccion_domicilio %>" required>
+
+                <hr>
+
+                <input class="btn btn-primary" type="submit" value="Guardar cambios">
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

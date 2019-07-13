@@ -9,7 +9,7 @@
 
   <% include ../../partials/nav.ejs %>
 
-
+  <br>
   <div class="container">
     <div class="row">
       <div class="col-lg-10">
@@ -17,58 +17,64 @@
           <div class="card-body">
             <h3 class="card-title">Registrar nuevo propietario</h3>
             <hr>
-            <form action="action" method="POST">
+            <form action="create" method="POST">
               <div id="form" class="form-group">
 
-                <label for="txt-ci-chofer">Cédula de Identidad:</label>
-                <input type="text" maxlength="50" name="txt-ci-chofer" id="txt-ci-chofer" class="form-control"
+                <label for="txt-cod-propietario">Código de propietario:</label>
+                <input type="text" maxlength="10" name="txt-cod-propietario" id="txt-cod-propietario"
+                  class="form-control" placeholder="Ej: 63214569" required>
+                <br>
+
+                <label for="txt-ci-propietario">Cédula de Identidad:</label>
+                <input type="text" maxlength="10" name="txt-ci-propietario" id="txt-ci-propietario" class="form-control"
                   placeholder="Ej: 63214569" required>
                 <br>
 
-                <label for="txt-nombres-chofer">Nombre(s):</label>
-                <input type="text" maxlength="255" name="txt-nombres-chofer" id="txt-nombres-chofer"
+                <label for="txt-nombres-propietario">Nombre(s):</label>
+                <input type="text" maxlength="255" name="txt-nombres-propietario" id="txt-nombres-propietario"
                   class="form-control" placeholder="Ej: Joaquin" required>
                 <br>
 
-                <label for="txt-apellidos-chofer">Apellido(s):</label>
-                <input type="text" maxlength="255" name="txt-apellidos-chofer" id="txt-apellidos-chofer"
+                <label for="txt-apellidos-propietario">Apellido(s):</label>
+                <input type="text" maxlength="255" name="txt-apellidos-propietario" id="txt-apellidos-propietario"
                   class="form-control" placeholder="Ej: Chumacero" required>
                 <br>
 
-                <label for="txt-fecha-nacimiento-chofer">Fecha de Nacimiento:</label>
-                <input type="date" name="txt-fecha-nacimiento-chofer" id="txt-fecha-nacimiento-chofer"
+                <label for="txt-fecha-nacimiento-propietario">Fecha de Nacimiento:</label>
+                <input type="date" name="txt-fecha-nacimiento-propietario" id="txt-fecha-nacimiento-propietario"
                   class="form-control" placeholder="Ej: 1980-01-01" required>
                 <br>
 
-                <label for="txt-telefono-chofer">Teléfono:</label>
-                <input type="text" maxlength="255" name="txt-telefono-chofer" id="txt-telefono-chofer"
+                <label for="txt-telefono-propietario">Teléfono:</label>
+                <input type="text" maxlength="255" name="txt-telefono-propietario" id="txt-telefono-propietario"
                   class="form-control" placeholder="Ej: Chumacero" required>
                 <br>
 
-                <label for="txt-email-chofer">Email:</label>
-                <input type="text" maxlength="255" name="txt-email-chofer" id="txt-email-chofer" class="form-control"
-                  placeholder="Ej: joaquinchumacero@mail.com">
+                <label for="txt-email-propietario">Email:</label>
+                <input type="text" maxlength="255" name="txt-email-propietario" id="txt-email-propietario"
+                  class="form-control" placeholder="Ej: joaquinchumacero@mail.com">
                 <br>
 
-                <label for="txt-direccion-domicilio-chofer">Dirección del Domicilio:</label>
-                <input type="text" maxlength="255" name="txt-direccion-domicilio-chofer"
-                  id="txt-direccion-domicilio-chofer" class="form-control" placeholder="Ej: Chumacero" required>
+                <label for="txt-direccion-domicilio-propietario">Dirección del Domicilio:</label>
+                <input type="text" maxlength="255" name="txt-direccion-domicilio-propietario"
+                  id="txt-direccion-domicilio-propietario" class="form-control" placeholder="Ej: Chumacero" required>
                 <br>
 
-                <label for="txt-fecha-registro-chofer">Fecha de Registro:</label>
-                <input type="date" name="txt-fecha-registro-chofer" id="txt-fecha-registro-chofer" class="form-control"
-                  placeholder="Ej: 2019-01-01" required value="<%= (new Date()).toJSON().slice(0,10) %>">
+                <label for="txt-fecha-registro-propietario">Fecha de Registro:</label>
+                <input type="date" name="txt-fecha-registro-propietario" id="txt-fecha-registro-propietario"
+                  class="form-control" placeholder="Ej: 2019-01-01" required
+                  value="<%= (new Date()).toJSON().slice(0,10) %>">
                 <hr>
-                
+
                 <input class="btn btn-primary" type="submit" value="Registrar">
 
-              </div>
+              </div> <!-- /form group -->
             </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+          </div> <!-- /card-body -->
+        </div> <!-- /card -->
+      </div> <!-- /col-lg-10 -->
+    </div> <!-- /row -->
+  </div> <!-- container -->
 
 
   <% include ../../partials/footer.ejs %>

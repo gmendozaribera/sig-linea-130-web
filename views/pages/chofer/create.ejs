@@ -9,7 +9,7 @@
 
   <% include ../../partials/nav.ejs %>
 
-
+  <br>
   <div class="container">
     <div class="row">
       <div class="col-lg-10">
@@ -20,45 +20,50 @@
             <form action="create" method="POST">
               <div id="form" class="form-group">
 
-                <label for="txt-ci-chofer">Cédula de Identidad:</label>
-                <input type="text" maxlength="50" name="txt-ci-chofer" id="txt-ci-chofer" class="form-control"
-                  placeholder="Ej: 63214569" required>
-                <br>
-
-                <label for="txt-nombres-chofer">Nombre(s):</label>
-                <input type="text" maxlength="255" name="txt-nombres-chofer" id="txt-nombres-chofer"
-                  class="form-control" placeholder="Ej: Joaquin" required>
-                <br>
-
-                <label for="txt-apellidos-chofer">Apellido(s):</label>
-                <input type="text" maxlength="255" name="txt-apellidos-chofer" id="txt-apellidos-chofer"
-                  class="form-control" placeholder="Ej: Chumacero" required>
-                <br>
-
-                <label for="txt-fecha-nacimiento-chofer">Fecha de Nacimiento:</label>
-                <input type="date" name="txt-fecha-nacimiento-chofer" id="txt-fecha-nacimiento-chofer"
-                  class="form-control" required>
-                <br>
-
-                <label for="txt-telefono-chofer">Teléfono:</label>
-                <input type="text" maxlength="255" name="txt-telefono-chofer" id="txt-telefono-chofer"
-                  class="form-control" placeholder="Ej: 70800000" required>
-                <br>
-
-                <label for="txt-email-chofer">Email:</label>
-                <input type="text" maxlength="255" name="txt-email-chofer" id="txt-email-chofer" class="form-control"
-                  placeholder="Ej: joaquinchumacero@mail.com">
-                <br>
-
-                <label for="txt-direccion-domicilio-chofer">Dirección del Domicilio:</label>
-                <input type="text" maxlength="255" name="txt-direccion-domicilio-chofer"
-                  id="txt-direccion-domicilio-chofer" class="form-control" placeholder="Ej: Calle Siempreviva #123" required>
-                <br>
-
-                <label for="txt-fecha-registro-chofer">Fecha de Registro:</label>
-                <input type="date" name="txt-fecha-registro-chofer" id="txt-fecha-registro-chofer" class="form-control"
-                  placeholder="Ej: 2019-01-01" required value="<%= (new Date()).toJSON().slice(0,10) %>">
-                <hr>
+                  <label for="txt-cod-chofer">Código de Chofer:</label>
+                  <input type="text" maxlength="10" name="txt-cod-chofer" id="txt-cod-chofer" class="form-control"
+                    placeholder="Ej: 63214569" required>
+                  <br>
+  
+                  <label for="txt-ci-chofer">Cédula de Identidad:</label>
+                  <input type="text" maxlength="10" name="txt-ci-chofer" id="txt-ci-chofer" class="form-control"
+                    placeholder="Ej: 63214569" required>
+                  <br>
+  
+                  <label for="txt-nombres-chofer">Nombre(s):</label>
+                  <input type="text" maxlength="255" name="txt-nombres-chofer" id="txt-nombres-chofer"
+                    class="form-control" placeholder="Ej: Joaquin" required>
+                  <br>
+  
+                  <label for="txt-apellidos-chofer">Apellido(s):</label>
+                  <input type="text" maxlength="255" name="txt-apellidos-chofer" id="txt-apellidos-chofer"
+                    class="form-control" placeholder="Ej: Chumacero" required>
+                  <br>
+  
+                  <label for="txt-fecha-nacimiento-chofer">Fecha de Nacimiento:</label>
+                  <input type="date" name="txt-fecha-nacimiento-chofer" id="txt-fecha-nacimiento-chofer"
+                    class="form-control" placeholder="Ej: 1980-01-01" required>
+                  <br>
+  
+                  <label for="txt-telefono-chofer">Teléfono:</label>
+                  <input type="text" maxlength="255" name="txt-telefono-chofer" id="txt-telefono-chofer"
+                    class="form-control" placeholder="Ej: Chumacero" required>
+                  <br>
+  
+                  <label for="txt-email-chofer">Email:</label>
+                  <input type="text" maxlength="255" name="txt-email-chofer" id="txt-email-chofer" class="form-control"
+                    placeholder="Ej: joaquinchumacero@mail.com">
+                  <br>
+  
+                  <label for="txt-direccion-domicilio-chofer">Dirección del Domicilio:</label>
+                  <input type="text" maxlength="255" name="txt-direccion-domicilio-chofer"
+                    id="txt-direccion-domicilio-chofer" class="form-control" placeholder="Ej: Chumacero" required>
+                  <br>
+  
+                  <label for="txt-fecha-registro-chofer">Fecha de Registro:</label>
+                  <input type="date" name="txt-fecha-registro-chofer" id="txt-fecha-registro-chofer" class="form-control"
+                    placeholder="Ej: 2019-01-01" required value="<%= (new Date()).toJSON().slice(0,10) %>">
+                  <hr>
                 
                 <input class="btn btn-primary" type="submit" value="Registrar">
 

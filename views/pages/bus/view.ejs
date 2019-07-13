@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body style="background-color: beige">
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h2 class="card-title">Bus: <%= `${bus.marca} ${bus.modelo} (${bus.placa_pta})` %></h2>
+            <hr>
+            <table class="table table-bordered">
+
+              <tr>
+                <td><b>Placa (PTA):</b></td>
+                <td><%= bus.placa_pta %></td>
+              </tr>
+
+              <tr>
+                <td><b>Código de Chasis:</b></td>
+                <td><%= bus.cod_chasis %></td>
+              </tr>
+
+              <tr>
+                <td><b>Marca:</b></td>
+                <td><%= bus.marca %></td>
+              </tr>
+
+              <tr>
+                <td><b>Modelo:</b></td>
+                <td><%= bus.modelo %></td>
+              </tr>
+
+              <tr>
+                <td><b>Año:</b></td>
+                <td><%= bus.anio %></td>
+              </tr>
+
+              <tr>
+                <td><b>Fecha de registro:</b></td>
+                <% if(bus.fecha_registro){ %>
+                <td><%= bus.fecha_registro %></td>
+                <% }else{ %>
+                <td><i>No especificado</i></td>
+                <% } %>
+              </tr>
+
+              <tr>
+                <td><b>Chofer:</b></td>
+                <td><a href="/chofer/view/<%= bus.chofer.chofer_id %>">
+                    <%= `${bus.chofer.nombres} ${bus.chofer.apellidos} (${bus.chofer.ci})` %>
+                  </a></td>
+              </tr>
+
+              <tr>
+                <td><b>Propietario:</b></td>
+                <td><a href="/propietario/view/<%= bus.propietario_id %>">
+                    <%= `${bus.propietario.nombres} ${bus.propietario.apellidos} (${bus.propietario.ci})` %>
+                  </a></td>
+              </tr>
+
+              <tr>
+                <td><b>Linea:</b></td>
+                <td><a href="/linea/view/<%= bus.linea_id %>">
+                    Interno nro: <%= bus.linea.nro_interno %>
+                  </a></td>
+              </tr>
+
+              <tr>
+                <td><b>Estado del bus:</b></td>
+                <td><%= bus.estado_bus.nombre %></td>
+              </tr>
+
+            </table>
+
+            <hr>
+
+            <a href="/bus/update/<%= bus.bus_id %>" class="btn btn-primary">Modificar</a>
+            <a href="#" class="btn btn-danger">Eliminar</a>
+
+          </div> <!-- card-body -->
+        </div> <!-- card -->
+      </div> <!-- col-lg-10 -->
+    </div> <!-- row -->
+  </div> <!-- container -->
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

@@ -9,6 +9,7 @@
 
   <% include ../partials/nav.ejs %>
 
+  <br>
   <div class="container">
 
     <div class="row">
@@ -24,19 +25,19 @@
                 <th>Fecha de Emision</th>
                 <th>Concepto de la multa</th>
                 <th>Monto</th>
-              </tr>           
+              </tr>
               <% multas.forEach( (multa) => { %>
-                <tr>
-                  <td><%= multa.fecha_multa %></td>
-                  <td><%= multa.concepto %></td>
-                  <td><%= multa.monto %></td>
-                  <td>
-                      <!-- Ver | Editar | Eliminar -->
-                      <a href="/multa/view/<%= multa.multa_id %>">Ver</a> |
-                      <a href="/multa/update/<%= multa.multa_id %>">Modificar</a> |
-                      <a href="#">Eliminar</a>
-                    </td>
-                </tr>
+              <tr>
+                <td><%= multa.fecha_multa %></td>
+                <td><%= multa.concepto %></td>
+                <td><%= multa.monto %></td>
+                <td>
+                  <!-- Ver | Editar | Eliminar -->
+                  <a href="/multa/view/<%= multa.multa_id %>">Ver</a> |
+                  <a href="/multa/update/<%= multa.multa_id %>">Modificar</a> |
+                  <a href="#">Eliminar</a>
+                </td>
+              </tr>
               <% }); %>
             </table>
           </div>

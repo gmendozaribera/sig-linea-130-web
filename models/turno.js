@@ -24,5 +24,9 @@ module.exports = function(sequelize, DataTypes){
     timestamps: false
   });
 
+  Turno.associate = function(models){
+    Turno.belongsToMany(models.Linea, {through: 'asignacion_turnos', foreignKey: 'turno_id'});
+  }
+
   return Turno;
 }

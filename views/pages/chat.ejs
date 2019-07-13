@@ -17,10 +17,10 @@
 
         <div id="messages-card" class="card">
           <div class="card-header">
-            <h3 class="card-title.">Chatter</h3>
+            <h3 class="card-title.">Sala de Chat</h3>
           </div>
           <div class="card-body">
-            <p><i>messages should appear here...</i></p>
+            <p><i>Los mensajes aparecerán aquí...</i></p>
             <ul id="messages"></ul>
           </div>
           <div class="card-footer">
@@ -53,7 +53,7 @@
 
     // crear una instancia de socket.io cliente (io() sin parámetros significa "esta pc, cualquier")
     // conectarse a la sala "javascript" del namespace "tech"
-    const nsp = 'tech';
+    const nsp = 'chat';
     const socket = io('http://localhost:5000/' + nsp);
     const room = 'javascript';
 
@@ -65,19 +65,18 @@
     $('#message-form').submit(() => {
       const msg = $('#m').val();
       const obj = { room: room, uname: uname, msg: msg };
-      socket.emit('message', obj);
+      socket.emit('messageFromClient', obj);
       $('#m').val('');  // borrar texto del form
       return false;     // previene el recargado de la página
     });
 
     // evento "conectarse"
     socket.on('connect', () => {
-      // unirse a la sala
-      socket.emit('join', { uname: uname, room: room });
+      socket.emit('join', { uname: uname, room: room }); // unirse a la sala
     });
 
-    // escuchar por nuevos mensajes
-    socket.on('message', (msg) => {
+    // escuchar nuevos mensajes desde el servidor
+    socket.on('messageFromServer', (msg) => {
       $('#messages').append($('<li>').text(msg));
     });
   </script>

@@ -1,5 +1,5 @@
-module.exports = function(sequelize, DataTypes){
-  const Bus = sequelize.define('bus',{
+module.exports = function (sequelize, DataTypes) {
+  const Bus = sequelize.define('bus', {
     // objeto "attributes"
     bus_id: {
       type: DataTypes.INTEGER,
@@ -30,11 +30,22 @@ module.exports = function(sequelize, DataTypes){
       type: DataTypes.DATE,
       allowNull: true
     }
-  },{
-    // objeto "options"
-    freezeTableName: true,
-    timestamps: false
-  });
+  }, {
+      // objeto "options"
+      freezeTableName: true,
+      timestamps: false,
+      tableName: 'bus'
+    });
+
+
+
+  // establecimiento de FKs
+  Bus.associate = function (models) {
+    Bus.belongsTo(models.Propietario, { foreignKey: 'propietario_id' });
+    Bus.belongsTo(models.Chofer, { foreignKey: 'chofer_id' });
+    Bus.belongsTo(models.EstadoBus, { foreignKey: 'estado_bus_id' });
+    Bus.hasOne(models.Linea, { foreignKey: 'bus_id' });
+  }
 
   return Bus;
 }
