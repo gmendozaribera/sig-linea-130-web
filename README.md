@@ -42,12 +42,6 @@ desde la carpeta raíz del proyecto. **Sin embargo**, esto requiere algunas modi
 
 ---
 
-## Para acceder a la interfaz web del proyecto
-
-Basta con 
-
----
-
 ### Sobre el archivo .env
 El archivo ```.env``` (environment) especifica algunas variables de entorno requeridas para el funcionamiento del sistema. Este archivo se debe encontrar en el directorio raíz del proyecto y debe especificar las siguientes variables:
 
