@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h2 class="card-title">Rol: <%= `${role.role_name})` %></h2>
+            <hr>
+            <table class="table table-bordered">
+
+              <tr>
+                <td><b>Nombre:</b></td>
+                <td><%= role.role_name %></td>
+              </tr>
+
+              <tr>
+                <td><b>Descripción:</b></td>
+                <td><%= role.role_description %></td>
+              </tr>
+
+            </table>
+
+            <hr>
+
+            <h3>Privilegios asociados:</h3>
+            <p>Coming soon!</p>
+
+            <hr>
+
+            <a href="/role/update/<%= role.role_id %>" class="btn btn-primary">Modificar</a>
+            <a href="#" class="btn btn-danger">Eliminar</a>
+
+          </div> <!-- card-body -->
+        </div> <!-- card -->
+      </div> <!-- col-lg-10 -->
+    </div> <!-- row -->
+  </div> <!-- container -->
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

@@ -105,10 +105,7 @@ function update(req, res) {
       .then((multa) => {
         models.Chofer.findAll()
           .then((choferes) => {
-            res.render('pages/multa/update', {
-              multa,
-              choferes
-            });
+            res.render('pages/multa/update', { multa, choferes });
           });
       }).catch((error) => {
         console.error(

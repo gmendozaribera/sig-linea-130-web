@@ -7,11 +7,6 @@ module.exports = function(sequelize, DataTypes){
       autoIncrement: true
     },
     username: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      unique: true
-    },
-    email: {
       type: DataTypes.STRING(100),
       allowNull: false,
       unique: true
@@ -19,12 +14,34 @@ module.exports = function(sequelize, DataTypes){
     password: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      unique: true
+    },
+    forgot_pw_token: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    acc_verify_token: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     }
   },{
     // objeto "options"
     freezeTablenames: true,
-    timestamps: false
+    timestamps: true,
+    tableName: 'user'
   });
+
+  User.associate = function(models){
+    User.belongsTo(models.Role, {foreignKey: 'role_id'});
+  }
 
   return User;
 }

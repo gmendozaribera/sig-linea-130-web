@@ -8,21 +8,37 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+      <li class="nav-item"><a href="/shapefile" class="nav-link">Ver rutas y paradas</a></li>
+      <li class="nav-item"><a href="/tracking" class="nav-link">Seguimiento de Micros</a></li>
+      <li class="nav-item"><a class="nav-link" href="/chat">Sala de Chat</a></li>
+      <li class="nav-item"><a class="nav-link" href="https://google.com">Gugle :V</a></li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           Menú
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <div class="dropdown-menu" aria-labelledby="gestionarDropdown">
           <a class="dropdown-item" href="/bus">Buses</a>
           <a class="dropdown-item" href="/chofer">Choferes</a>
           <a class="dropdown-item" href="/propietario">Propietarios</a>
           <a class="dropdown-item" href="/multa">Multas</a>
-          <a class="dropdown-item" href="/chat">Sala de Chat</a>
-          <a class="dropdown-item" href="/shapefile">Ver rutas y paradas</a>
-          <a class="dropdown-item" href="/tracking">Seguimiento de Micros</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/login">Iniciar Sesión/Registrarse</a>
+          <a class="dropdown-item" href="/user">Usuarios</a>
+          <a class="dropdown-item" href="/role">Roles</a>
+          <a class="dropdown-item" href="/privilege">Privilegios</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="sesionDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          Sesión
+        </a>
+        <div class="dropdown-menu" aria-labelledby="sesionDropdown">
+          <a class="dropdown-item" href="/login">Iniciar Sesión</a>
+          <a class="dropdown-item" href="/signup">Registrarse</a>
+          <div class="dropdown-divider"></div><!-- DIVIDER LOL -->
+          <form action="/logout" method="post">
+            <input type="submit" class="dropdown-item" value="Cerrar sesión">
+          </form>
         </div>
       </li>
     </ul>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+  <link type="text/css" href="/css/leaflet.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Lista de Usuarios</h2>
+            <hr>
+            <a href="/user/create" class="btn btn-primary">Registrar nuevo usuario</a>
+            <hr>
+            <table class="table table-bordered">
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Fecha de Creación</th>
+                <th>Última modificación</th>
+                <th>Acciones</th>
+              </tr>
+              <% users.forEach( (user) => { %>
+                <tr>
+                  <td><%= user.username %></td>
+                  <td><%= user.email %></td>
+                  <td><%= user.createdat %></td>
+                  <td><%= user.updatedat %></td>
+                  <td>
+                    <!-- Ver | Editar | Eliminar -->
+                    <a href="/user/view/<%= privilege.privilege_id %>">Ver</a> |
+                    <a href="/user/update/<%= privilege.privilege_id %>">Modificar</a> |
+                    <a href="#">Eliminar</a>
+                  </td>
+                </tr>
+              <% }); %>
+            </table>
+          </div> <!-- /card-body-->
+        </div> <!-- /card -->
+      </div> <!-- /col-lg-10 -->
+    </div><!-- row -->
+  </div> <!-- container -->
+
+  <% include ../../partials/footer.ejs %>
+
+</body>
+
+</html>

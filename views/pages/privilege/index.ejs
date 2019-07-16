@@ -18,30 +18,24 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <h2 class="card-title">Lista de Buses</h2>
+            <h2 class="card-title">Lista de Privilegios</h2>
             <hr>
-            <a href="/bus/create" class="btn btn-primary">Registrar nuevo bus</a>
+            <a href="/bus/create" class="btn btn-primary">Registrar nuevo privilegio</a>
             <hr>
             <table class="table table-bordered">
               <tr>
-                <th>Placa</th>
-                <th>Codigo de Chasis</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Año</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
                 <th>Acciones</th>
               </tr>
-              <% buses.forEach( (bus) => { %>
+              <% privileges.forEach( (privilege) => { %>
                 <tr>
-                  <td><%= bus.placa_pta %></td>
-                  <td><%= bus.cod_chasis %></td>
-                  <td><%= bus.marca %></td>
-                  <td><%= bus.modelo %></td>
-                  <td><%= bus.anio %></td>
+                  <td><%= privilege.priv_name %></td>
+                  <td><%= privilege.priv_description %></td>
                   <td>
                     <!-- Ver | Editar | Eliminar -->
-                    <a href="/bus/view/<%= bus.bus_id %>">Ver</a> |
-                    <a href="/bus/update/<%= bus.bus_id %>">Modificar</a> |
+                    <a href="/privilege/view/<%= privilege.privilege_id %>">Ver</a> |
+                    <a href="/privilege/update/<%= privilege.privilege_id %>">Modificar</a> |
                     <a href="#">Eliminar</a>
                   </td>
                 </tr>

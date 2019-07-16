@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Lista de Roles</h2>
+            <hr>
+            <a href="/role/create" class="btn btn-primary">Registrar nuevo rol</a>
+            <a href="/role/assign-privs" class="btn btn-primary">Asignar privilegios</a>
+            <hr>
+            <table class="table table-bordered">
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+              <% roles.forEach( (role) => { %>
+                <tr>
+                  <td><%= role.role_name %></td>
+                  <td><%= role.role_description %></td>
+                  <td>
+                    <!-- Ver | Editar | Eliminar -->
+                    <a href="/role/view/<%= role.role_id %>">Ver</a> |
+                    <a href="/role/update/<%= role.role_id %>">Modificar</a> |
+                    <a href="#">Eliminar</a>
+                  </td>
+                </tr>
+              <% }); %>
+            </table>
+          </div> <!-- /card-body -->
+        </div> <!-- /card -->
+      </div> <!-- /col-lg-10 -->
+    </div><!-- /row -->
+  </div> <!-- /container -->
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

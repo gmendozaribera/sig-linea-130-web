@@ -5,7 +5,7 @@
   <% include ../../partials/header.ejs %>
 </head>
 
-<body style="background-color: beige">
+<body>
 
   <% include ../../partials/nav.ejs %>
 
@@ -55,28 +55,42 @@
 
               <tr>
                 <td><b>Chofer:</b></td>
-                <td><a href="/chofer/view/<%= bus.chofer.chofer_id %>">
+                <td>
+                  <a href="/chofer/view/<%= bus.chofer.chofer_id %>">
                     <%= `${bus.chofer.nombres} ${bus.chofer.apellidos} (${bus.chofer.ci})` %>
-                  </a></td>
+                  </a>
+                </td>
               </tr>
 
               <tr>
                 <td><b>Propietario:</b></td>
-                <td><a href="/propietario/view/<%= bus.propietario_id %>">
+                <td>
+                  <a href="/propietario/view/<%= bus.propietario_id %>">
                     <%= `${bus.propietario.nombres} ${bus.propietario.apellidos} (${bus.propietario.ci})` %>
-                  </a></td>
+                  </a>
+                </td>
               </tr>
 
               <tr>
                 <td><b>Linea:</b></td>
-                <td><a href="/linea/view/<%= bus.linea_id %>">
+                <% if(bus.linea) {%>
+                <td>
+                  <a href="/linea/view/<%= bus.linea.nro_interno %>">
                     Interno nro: <%= bus.linea.nro_interno %>
-                  </a></td>
+                  </a>
+                </td>
+                <% }else{ %>
+                  <td><i>No especificado</i></td>
+                <% } %>
               </tr>
 
               <tr>
                 <td><b>Estado del bus:</b></td>
+                <% if(bus.estado_bus) {%>
                 <td><%= bus.estado_bus.nombre %></td>
+                <% }else{ %>
+                  <td><i>No especificado</i></td>
+                <% } %>
               </tr>
 
             </table>

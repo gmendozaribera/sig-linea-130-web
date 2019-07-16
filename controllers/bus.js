@@ -58,21 +58,16 @@ function create(req, res) {
       propietario_id: req.body['sel-propietario'],
       chofer_id: req.body['sel-chofer'],
       estado_bus_id: req.body['sel-estado']
-    }).then((bus) => {
-      res.redirect(`/bus/view/${bus.bus_id}`);
+    }).then((newBus) => {
+      res.redirect(`/bus/view/${newBus.bus_id}`);
     }).catch((error) => {
-      console.error(
-        'Error al obtener el modelo "bus" desde la base de datos: \n',
-        error.message);
+      console.error('Crear el nuevo bus: \n', error.message);
+      res.redirect('/');
     });
   } else {
-    // res.render('pages/bus/create');
     models.Chofer.findAll().then((choferes) => {
-      console.log(choferes);
       models.Propietario.findAll().then((propietarios) => {
-        console.log(propietarios);
         models.EstadoBus.findAll().then((estados) => {
-          console.log(estados);
           res.render('pages/bus/create', {
             choferes,
             propietarios,
@@ -106,29 +101,24 @@ function update(req, res) {
           chofer_id: req.body['sel-chofer'],
           estado_bus_id: req.body['sel-estado']
           // fecha_registro: req.body['txt-fecha-registro-chofer']
-        }).then((bus) => {
-          res.redirect(`/bus/view/${bus.bus_id}`);
+        }).then((updatedBus) => {
+          res.redirect(`/bus/view/${updatedBus.bus_id}`);
         }).catch((error) => {
-          console.error(
-            'Error al actualizar el modelo "bus" a la base de datos: \n',
-            error.message);
+          console.error('Error al actualizar el modelo "bus" a la base de datos: \n', error.message);
+          res.redirect('/');
         });
       }).catch((error) => {
-        console.error(
-          'Error al obtener el modelo "bus" desde la base de datos: \n',
-          error.message);
+        console.error('Error al obtener el modelo "bus" desde la base de datos: \n', error.message);
+        res.redirect('/');
       });
   } else {
-    Bus.findByPk(req.params.id, {
-      // opciones de selección: obtener el estado del bus, el chofer y el propietario
+    const opts = {
       include: [models.EstadoBus, models.Chofer, models.Propietario]
-    }).then((bus) => {
+    };
+    Bus.findByPk(req.params.id, opts).then((bus) => {
       models.Chofer.findAll().then((choferes) => {
-        console.log(choferes);
         models.Propietario.findAll().then((propietarios) => {
-          console.log(propietarios);
           models.EstadoBus.findAll().then((estados) => {
-            console.log(estados);
             res.render('pages/bus/update', {
               bus,
               choferes,
@@ -139,9 +129,8 @@ function update(req, res) {
         }); // catch propietario...
       }); // catch chofer...
     }).catch((error) => {
-      console.error(
-        'Error al obtener el modelo "bus" desde la base de datos: \n',
-        error.message);
+      console.error('Error al obtener el modelo "bus" desde la base de datos: \n', error.message);
+      res.redirect('/');
     });
   }
 }

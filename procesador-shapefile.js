@@ -7,10 +7,10 @@ module.exports.shpPathsArr = shpPathsArr;
 /**
  * Obtiene los shapefiles del directorio especificado y los devuelve como un
  * array de rutas absolutas. En caso de no especificarse un directorio, busca
- * en la carpeta "/shapefiles/" del directorio actual.
+ * en la carpeta "./shapefiles/" del directorio actual.
  * 
  * @param {string} dir El directorio en donde buscar shapefiles.
- * @returns {string[]} arreglo de cadenas
+ * @returns {string[]} Array de strings que representan las rutas de los archivos
  */
 function shpPathsArr(dir = null) {
   let arr = [];
@@ -21,21 +21,27 @@ function shpPathsArr(dir = null) {
   allFiles.forEach((fileName) => {
     const splitArr = fileName.split('.');
     const fileExt = splitArr[splitArr.length - 1];
+    // si tiene extensión shapefile, agregar al resultado
     if (fileExt === 'shp') arr.push(shapefilesDir + fileName);
   });
   return arr;
 }
 
-
+/**
+ * Obtiene todos los shapefiles contenidos en un directorio dado y los devuelve en un array
+ * de GeoJSON. De no especificarse el directorio, se trabaja con "./shapefiles/"
+ *  
+ * @param {String} dir El directorio del cual obtener los shapefiles
+ */
 function getAllShpAsGeoJsonArr(dir = null) {
   let shapefiles = shpPathsArr(dir);
   let result = [];
   for (i = 0; i < shapefiles.length; i++) {
     try {
-      shpToGeoJsonArr(shapefiles[i], (geoJsonArr) => {result.push(geoJsonArr)});
+      shpToGeoJsonArr(shapefiles[i], (geoJsonArr) => { result.push(geoJsonArr) });
     } catch (error) {
-      console.error('Se ha producido un error: \n' + error);
-      return result;
+      console.error('[SHP] Error al leer shapefile como GeoJSON:', error.message);
+      break;
     }
   }
   return result;
@@ -43,9 +49,9 @@ function getAllShpAsGeoJsonArr(dir = null) {
 
 
 /**
- * @return {array} Devuelve un array de las caracteristicas (convertidas a GeoJSON)
+ * @return {array} Devuelve un array de todas las caracteristicas (convertidas a GeoJSON)
  * del shapefile especificado mediante el parametro 'filename'.
- * Esta funcion trabaja con Promises y de forma recursiva.
+ * Esta funcion trabaja con Promises y de forma recursiva (ver: "function log(...)" ).
  * 
  * @param {string} filename El nombre del archivo a ser cargado, relativo al directorio './shapefiles/'
  * @param {function} callback Callback a ser invocada cuando finalice el cargado del shapefile.
@@ -59,18 +65,20 @@ function shpToGeoJsonArr(filename, callback) {
         .then(function log(result) {
           if (result.done) {
             // si ya no quedan más características cortar la ejecución y retornar
-            console.log(shpFeatures);
+            console.log(`[SHP] Se terminó de convertir ${filename} a GeoJSON.`);
+            console.log('[SHP] Resultado:', shpFeatures); // TO DO: deshabilitar esto en producción!
             return callback(shpFeatures);
+          } else {
+            // aun quedan caracteristicas que procesar, continuar
+            console.log('[SHP] Característica convertida a GeoJSON.');
+            console.log('[SHP] Resultado:', result.value);  // TO DO: deshabilitar esto en producción!
+            shpFeatures.push(result.value);
+            return source.read().then(log); // continuar leyendo características
           }
-          // aun quedan caracteristicas que procesar, continuar
-          console.log('Feature converted!');
-          console.log(result.value);
-          shpFeatures.push(result.value);
-          return source.read().then(log); // continuar leyendo (un shapefile puede tener N características)
-        }).catch((error) => console.error('Error al leer desde la fuente especificada: \n' + error))
-      ).catch((error) => console.error('Error al abrir el archivo especificado: \n' + error));
+        }).catch((error) => console.error('[SHP] Error al leer la fuente especificada:', error))
+      ).catch((error) => console.error('[SHP] Error al abrir el shapefile especificado:', error));
   } catch (error) {
-    console.error('Error capturado: \n' + error);
+    console.error('[SHP] Se ha producido un error. Detalles:', error);
   }
 }
 

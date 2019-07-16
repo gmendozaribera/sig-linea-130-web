@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h3 class="card-title">Registrar Nuevo Rol</h3>
+            <hr>
+            <form action="/role/create" method="POST">
+              <div id="form" class="form-group">
+
+                <label for="role_name">Nombre:</label>
+                <input class="form-control" type="text" name="role_name" id="txt-role_name"
+                  placeholder="Ej: Propietario" required />
+                <br>
+
+                <label for="role_description">Descripción:</label>
+                <input class="form-control" type="text" name="role_description" id="txt-role_description"
+                  placeholder="Ej: Persona que pone un bus a trabajar en la línea de transporte." required />
+
+                <hr>
+
+                <input class="btn btn-primary" type="submit" value="Registrar">
+              </div> <!-- /form-group -->
+            </form>
+          </div> <!-- /card-body -->
+        </div> <!-- /card -->
+      </div> <!-- /col-lg-10 -->
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

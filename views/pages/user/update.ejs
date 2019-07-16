@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h3 class="card-title">Modificar usuario: <%= `${user.username} ${user.email}`%></h3>
+            <hr>
+            <form action="/user/update" method="POST">
+              <div id="form" class="form-group">
+
+                <label for="username">Nombre de usuario:</label>
+                <input class="form-control" type="text" name="username" id="txt-username" placeholder="Ej: chumacero99"
+                  maxlength="100" value="<%= user.username %>" required />
+                <br>
+
+                <label for="password">Contraseña:</label>
+                <input class="form-control" type="password" name="password" id="txt-password" required />
+                <br>
+
+                <label for="email">Email:</label>
+                <input class="form-control" type="email" name="email" id="txt-email"
+                  placeholder="Ej: joaquin@chumacero.com" maxlength="254" value="<%= user.email %>" required />
+                <br>
+
+                <label for="role_id">Rol del Usuario:</label>
+                <select name="role_id" id="sel-role_id" class="form-control" required>
+                  <option value=""><i>Seleccione un rol para este usuario</i></option>
+                  <!--obtener!-->
+                  <!--tomar en cuenta el valor previamente seleccionado-->
+                  <% roles.forEach((role) => { %>
+                  <option value="<%= role.role_id %>"
+                    selected="<%= role.role_id === user.role_id ? 'true' : 'false' %>">
+                    <%= role.role_name %></option>
+                  <% }); %>
+                </select>
+
+                <hr>
+
+                <input class="btn btn-primary" type="submit" value="Guardar Cambios">
+                <a href="/user/view/<%= user.user_id %>" class="btn btn-dark">Cancelar</a>
+
+              </div> <!-- /form-group -->
+            </form>
+          </div> <!-- /card-body -->
+        </div> <!-- /form-card -->
+      </div> <!-- /col-lg-10 -->
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>

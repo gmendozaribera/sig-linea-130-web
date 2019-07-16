@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../../partials/nav.ejs %>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="card" id="form-card">
+          <div class="card-body">
+            <h3 class="card-title">Registrar Nuevo Privilegio</h3>
+            <hr>
+            <form action="/privilege/create" method="POST">
+              <div id="form" class="form-group">
+
+                <label for="priv_name">Nombre:</label>
+                <input class="form-control" type="text" name="priv_name" id="txt-priv_name"
+                  placeholder="Ej: registrar nuevo usuario" required />
+                <br>
+
+                <label for="priv_description">Descripción:</label>
+                <input class="form-control" type="text" name="priv_description" id="txt-priv_description"
+                  placeholder="Ej: Permitir la creación de usuarios nuevos en el sistema." required />
+
+                <hr>
+
+                <input class="btn btn-primary" type="submit" value="Registrar">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <% include ../../partials/footer.ejs %>
+</body>
+
+</html>
