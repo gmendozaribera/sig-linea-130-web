@@ -10,7 +10,11 @@ const Bus = models.Bus;
 function index(req, res) {
   Bus.findAll({ order: [['placa_pta', 'ASC']] })
     .then((results) => {
-      res.render('pages/bus/index', { buses: results });
+      res.render('pages/bus/index', {
+        user: req.user,
+        flash: req.flash(),
+        buses: results
+      });
     }).catch((error) => {
       console.error('Error al obtener la lista de buss: \n', error.message);
     });
@@ -31,7 +35,11 @@ function view(req, res) {
     include: [models.EstadoBus, models.Chofer, models.Propietario, models.Linea]
   }).then((bus) => {
     console.log(bus);
-    res.render('pages/bus/view', { bus: bus });
+    res.render('pages/bus/view', {
+      user: req.user,
+      flash: req.flash(),
+      bus: bus
+    });
   }).catch((error) => {
     console.error(
       'Error al obtener el modelo "bus" desde la base de datos: \n',
@@ -69,6 +77,8 @@ function create(req, res) {
       models.Propietario.findAll().then((propietarios) => {
         models.EstadoBus.findAll().then((estados) => {
           res.render('pages/bus/create', {
+            user: req.user,
+            flash: req.flash(),
             choferes,
             propietarios,
             estados
@@ -120,6 +130,8 @@ function update(req, res) {
         models.Propietario.findAll().then((propietarios) => {
           models.EstadoBus.findAll().then((estados) => {
             res.render('pages/bus/update', {
+              user: req.user,
+              flash: req.flash(),
               bus,
               choferes,
               propietarios,

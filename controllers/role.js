@@ -14,7 +14,11 @@ function index(req, res) {
   };
   Role.findAll(opts)
     .then((results) => {
-      res.render('pages/role/index', { roles: results });
+      res.render('pages/role/index', {
+        user: req.user,
+        flash: req.flash(),
+        roles: results
+      });
     }).catch((error) => {
       console.error('Error al obtener la lista de roles: \n', error.message);
       res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
@@ -33,7 +37,11 @@ function view(req, res) {
     // include: [some, related, models]
   };
   Role.findByPk(req.params.id, opts).then((role) => {
-    res.render('pages/role/view', { role });
+    res.render('pages/role/view', {
+      user: req.user,
+      flash: req.flash(),
+      role
+    });
   }).catch((error) => {
     console.error('Error al obtener el modelo "role" desde la base de datos: \n', error.message);
     res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
@@ -59,7 +67,10 @@ function create(req, res) {
       res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
     });
   } else {
-    res.render('/pages/role/create/');
+    res.render('pages/role/create', {
+      user: req.user,
+      flash: req.flash(),
+    });
   }
 }
 
@@ -92,7 +103,11 @@ function update(req, res) {
       // include: [some, related, models]
     };
     Role.findByPk(req.params.id, opts).then((role) => {
-      res.render('pages/role/update/', { role });
+      res.render('pages/role/update/', {
+        user: req.user,
+        flash: req.flash(),
+        role
+      });
     }).catch((error) => {
       console.error('Error al obtener el modelo "role" desde la base de datos: \n', error.message);
       res.redirect('/');

@@ -15,10 +15,12 @@
       <div class="col-lg-10">
         <div class="card" id="form-card">
           <div class="card-body">
-            <h3 class="card-title">Modificar usuario: <%= `${user.username} ${user.email}`%></h3>
+            <h3 class="card-title">Modificar usuario: <%= user.username %></h3>
             <hr>
             <form action="/user/update" method="POST">
               <div id="form" class="form-group">
+
+                <input type="hidden" name="user_id" value="<%= user.user_id %>">
 
                 <label for="username">Nombre de usuario:</label>
                 <input class="form-control" type="text" name="username" id="txt-username" placeholder="Ej: chumacero99"

@@ -14,11 +14,15 @@ function index(req, res) {
     // include: [some, Related, Models]
   };
   Privilege.findAll(opts).then((results) => {
-      res.render('pages/privilege/index', { privileges: results });
-    }).catch((error) => {
-      console.error('Error al obtener la lista de privilegios: \n', error.message);
-      res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
+    res.render('pages/privilege/index', {
+      user: req.user,
+      flash: req.flash(),
+      privileges: results
     });
+  }).catch((error) => {
+    console.error('Error al obtener la lista de privilegios: \n', error.message);
+    res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
+  });
 }
 
 
@@ -33,7 +37,11 @@ function view(req, res) {
     // include: [some, related, models]
   };
   Privilege.findByPk(req.params.id, opts).then((privilege) => {
-    res.render('pages/privilege/view', { privilege });
+    res.render('pages/privilege/view', {
+      user: req.user,
+      flash: req.flash(),
+      privilege
+    });
   }).catch((error) => {
     console.error('Error al obtener el modelo "privilege" desde la base de datos: \n', error.message);
     res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
@@ -59,7 +67,10 @@ function create(req, res) {
       res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
     });
   } else {
-    res.render('/pages/privilege/create/');
+    res.render('pages/privilege/create', {
+      user: req.user,
+      flash: req.flash()
+    });
   }
 }
 
@@ -73,25 +84,29 @@ function create(req, res) {
 function update(req, res) {
   if (req.method === 'POST') {
     Privilege.findByPk(req.body['privilege_id']).then((privilege) => {
-        privilege.update({
-          priv_name: req.body['priv_name'],
-          priv_description: req.body['priv_description']
-        }).then((updatedPrivilege) => {
-          res.redirect(`/privilege/view/${updatedPrivilege.privilege_id}`);
-        }).catch((error) => {
-          console.error('Error al actualizar el modelo "privilege" a la base de datos: \n', error.message);
-          res.redirect('/');
-        });
+      privilege.update({
+        priv_name: req.body['priv_name'],
+        priv_description: req.body['priv_description']
+      }).then((updatedPrivilege) => {
+        res.redirect(`/privilege/view/${updatedPrivilege.privilege_id}`);
       }).catch((error) => {
-        console.error('Error al obtener el modelo "privilege" desde la base de datos: \n', error.message);
+        console.error('Error al actualizar el modelo "privilege" a la base de datos: \n', error.message);
         res.redirect('/');
       });
+    }).catch((error) => {
+      console.error('Error al obtener el modelo "privilege" desde la base de datos: \n', error.message);
+      res.redirect('/');
+    });
   } else {
     const opts = {
       // include: [some, related, models]
     };
     Privilege.findByPk(req.params.id, opts).then((privilege) => {
-      res.render('pages/privilege/update/', { privilege });
+      res.render('pages/privilege/update', { 
+        user: req.user,
+        flash: req.flash(),
+        privilege
+      });
     }).catch((error) => {
       console.error('Error al obtener el modelo "privilege" desde la base de datos: \n', error.message);
       res.redirect('/');

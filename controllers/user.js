@@ -1,4 +1,6 @@
 const models = require('../models');
+const crypto = require('crypto');
+const app_secret = process.env.APP_SECRET;
 const UserModel = models.User; // TO DO: estandarizar esta nomenclatura en todos los models
 
 /**
@@ -15,7 +17,10 @@ function index(req, res) {
   };
   UserModel.findAll(opts)
     .then((results) => {
-      res.render('pages/user/index', { users: results });
+      res.render('pages/user/index', {
+        user: req.user,
+        flash: req.flash(),
+        users: results });
     }).catch((error) => {
       console.error('Error al obtener la lista de usuarios: \n', error.message);
       res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
@@ -30,10 +35,15 @@ function index(req, res) {
  * @param {Express.response} res 
  */
 function view(req, res) {
-  UserModel.findByPk(req.params.id, {
-    // include: [some, related, models]
-  }).then((user) => {
-    res.render('pages/user/view', { user });
+  opts = {
+    include: [models.Role]
+  };
+  UserModel.findByPk(req.params.id, opts).then((user) => {
+    res.render('pages/user/view', {
+      user: req.user,
+      flash: req.flash(),
+      user
+    });
   }).catch((error) => {
     console.error('Error al obtener el modelo "user" desde la base de datos: \n', error.message);
     res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
@@ -51,8 +61,9 @@ function create(req, res) {
   if (req.method === 'POST') {
     UserModel.create({
       username: req.body['username'],
-      password: req.body['password'], // TO DO: encrypt/hash!
-      email: req.body['email']
+      password: crypto.createHash('md5').update(req.body['password']).digest('hex'),
+      email: req.body['email'],
+      role_id: req.body['role_id']
       // opcionales: forgot_pw, acc_verify, status
     }).then((newUser) => {
       res.redirect(`/user/view/${newUser.user_id}`);
@@ -62,7 +73,11 @@ function create(req, res) {
     });
   } else {
     models.Role.findAll({order: [['role_name', 'ASC']]}).then((roles) => {
-      res.render('/pages/user/create/', {roles});
+      res.render('pages/user/create', {
+        user: req.user,
+        flash: req.flash(),
+        roles
+      });
     }).catch((error) => {
       console.error('Error al obtener los roles disponibles: \n', error.message);
       res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
@@ -83,12 +98,12 @@ function update(req, res) {
       .then((user) => {
         user.update({
           username: req.body['username'],
-          password: req.body['password'],
+          password: crypto.createHash('md5').update(req.body['password']).digest('hex'),
           email: req.body['email'],
           status: req.body['status'],
           role_id: req.body['role_id']
         }).then((updatedUser) => {
-          res.redirect(`/privilege/view/${updatedUser.user_id}`);
+          res.redirect(`/user/view/${updatedUser.user_id}`);
         }).catch((error) => {
           console.error('Error al actualizar el modelo "user" a la base de datos: \n', error.message);
           res.redirect('/'); // TO DO: establecer un flash informando el error por la UI
@@ -105,7 +120,12 @@ function update(req, res) {
     UserModel.findByPk(req.params.id, opts).then((user) => {
       // obtener todos los modelos disponibles
       models.Role.findAll({order: [['role_name','ASC']]}).then((roles) => {
-        res.render('pages/user/update/', { user, roles });
+        res.render('pages/user/update', {
+          user: req.user,
+          flash: req.flash(),
+          user,
+          roles
+        });
       }).catch((error) => {
         console.error('Error al obtener los roles disponibles: \n', error.message);
         res.redirect('/');

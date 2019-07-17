@@ -20,7 +20,7 @@
             <form action="/privilege/update" method="POST">
               <div id="form" class="form-group">
 
-                <input type="hidden" name="privilege_id" value="privilege.privilege_id">
+                <input type="hidden" name="privilege_id" value="<%= privilege.privilege_id %>">
 
                 <label for="priv_name">Nombre:</label>
                 <input class="form-control" type="text" name="priv_name" id="txt-priv_name"

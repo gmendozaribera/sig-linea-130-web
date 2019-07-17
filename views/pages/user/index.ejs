@@ -32,12 +32,12 @@
                 <tr>
                   <td><%= user.username %></td>
                   <td><%= user.email %></td>
-                  <td><%= user.createdat %></td>
-                  <td><%= user.updatedat %></td>
+                  <td><%= user.createdAt %></td>
+                  <td><%= user.updatedAt %></td>
                   <td>
                     <!-- Ver | Editar | Eliminar -->
-                    <a href="/user/view/<%= privilege.privilege_id %>">Ver</a> |
-                    <a href="/user/update/<%= privilege.privilege_id %>">Modificar</a> |
+                    <a href="/user/view/<%= user.user_id %>">Ver</a> |
+                    <a href="/user/update/<%= user.user_id %>">Modificar</a> |
                     <a href="#">Eliminar</a>
                   </td>
                 </tr>

@@ -14,7 +14,11 @@ function index(req, res) {
   };
   Multa.findAll(opts)
     .then((results) => {
-      res.render('pages/multa/index', { multas: results });
+      res.render('pages/multa/index', {
+        user: req.user,
+        flash: req.flash(),
+        multas: results
+      });
     }).catch((error) => {
       console.error('Error al obtener la lista de multas: \n', error.message);
       res.redirect('/');
@@ -33,7 +37,11 @@ function view(req, res) {
     // opciones de selección: obtener el chofer multado
     include: [models.Chofer]
   }).then((multa) => {
-    res.render('pages/multa/view', { multa });
+    res.render('pages/multa/view', {
+      user: req.user,
+      flash: req.flash(),
+      multa
+    });
   }).catch((error) => {
     console.error(
       'Error al obtener el modelo "multa" desde la base de datos: \n',
@@ -67,7 +75,11 @@ function create(req, res) {
   } else {
     models.Chofer.findAll({ order: [['nombres', 'ASC']] })
       .then((choferes) => {
-        res.render('pages/multa/create', { choferes });
+        res.render('pages/multa/create', {
+          user: req.user,
+          flash: req.flash(),
+          choferes
+        });
       });
   }
 }
@@ -105,7 +117,11 @@ function update(req, res) {
       .then((multa) => {
         models.Chofer.findAll()
           .then((choferes) => {
-            res.render('pages/multa/update', { multa, choferes });
+            res.render('pages/multa/update', {
+              user: req.user,
+              flash: req.flash(),
+              multa, choferes
+            });
           });
       }).catch((error) => {
         console.error(

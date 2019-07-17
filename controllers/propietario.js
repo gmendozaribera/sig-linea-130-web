@@ -10,7 +10,11 @@ const propietario = models.Propietario;
 function index(req, res) {
   propietario.findAll({ order: [['cod_propietario', 'ASC']] })
     .then((results) => {
-      res.render('pages/propietario/index', { propietarios: results });
+      res.render('pages/propietario/index', { 
+        user: req.user,
+        flash: req.flash(),
+        propietarios: results
+      });
     }).catch((error) => {
       console.error('Error al obtener la lista de propietarios: \n', error.message);
     });
@@ -27,6 +31,8 @@ function view(req, res) {
   propietario.findByPk(req.params.id)
     .then((propietario) => {
       res.render('pages/propietario/view', {
+        user: req.user,
+        flash: req.flash(),
         propietario: propietario
       });
     }).catch((error) => {
@@ -60,7 +66,10 @@ function create(req, res) {
       console.error('Error al crear el modelo de propietario: \n', error.message);
     });
   } else {
-    res.render('pages/propietario/create');
+    res.render('pages/propietario/create', {
+      user: req.user,
+      flash: req.flash(),
+    });
   }
 }
 
@@ -100,7 +109,11 @@ function update(req, res) {
   } else {
     propietario.findByPk(req.params.id)
     .then((propietario) => {
-      res.render('pages/propietario/update', { propietario: propietario });
+      res.render('pages/propietario/update', { 
+        user: req.user,
+        flash: req.flash(),
+        propietario: propietario
+      });
     }).catch((error) => {
       console.error(
         'Error al obtener el modelo "propietario" desde la base de datos: \n',

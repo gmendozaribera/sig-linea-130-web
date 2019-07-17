@@ -15,25 +15,45 @@
       <div class="col-lg-10">
         <div class="card" id="form-card">
           <div class="card-body">
-            <h2 class="card-title">Privilegio: <%= `${privilege.priv_name})` %></h2>
+            <h2 class="card-title">Usuario: <%= user.username %></h2>
             <hr>
             <table class="table table-bordered">
 
               <tr>
-                <td><b>Nombre:</b></td>
-                <td><%= privilege.priv_name %></td>
+                <td><b>Nombre de Usuario:</b></td>
+                <td><%= user.username %></td>
               </tr>
 
               <tr>
-                <td><b>Descripción:</b></td>
-                <td><%= privilege.priv_description %></td>
+                <td><b>Email:</b></td>
+                <td><%= user.email %></td>
+              </tr>
+
+              <tr>
+                <td><b>Pw Hash:</b></td>
+                <td><%= user.password %></td>
+              </tr>
+
+              <tr>
+                <td><b>Rol:</b></td>
+                <td><%= user.role.role_name %></td>
+              </tr>
+
+              <tr>
+                <td><b>Fecha de creación:</b></td>
+                <td><%= user.createdAt %></td>
+              </tr>
+
+              <tr>
+                <td><b>Fecha de última modificación:</b></td>
+                <td><%= user.updatedAt %></td>
               </tr>
 
             </table>
 
             <hr>
 
-            <a href="/privilege/update/<%= privilege.privilege_id %>" class="btn btn-primary">Modificar</a>
+            <a href="/user/update/<%= user.user_id %>" class="btn btn-primary">Modificar</a>
             <a href="#" class="btn btn-danger">Eliminar</a>
 
           </div> <!-- card-body -->

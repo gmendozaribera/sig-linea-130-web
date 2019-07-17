@@ -10,7 +10,11 @@ const Chofer = models.Chofer;
 function index(req, res) {
   Chofer.findAll({ order: [['cod_chofer', 'ASC']] })
     .then((results) => {
-      res.render('pages/chofer/index', { choferes: results });
+      res.render('pages/chofer/index', {
+        user: req.user,
+        flash: req.flash(),
+        choferes: results
+      });
     }).catch((error) => {
       console.error('Error al obtener la lista de choferes: \n', error.message);
     });
@@ -26,7 +30,11 @@ function index(req, res) {
 function view(req, res) {
   Chofer.findByPk(req.params.id)
     .then((chofer) => {
-      res.render('pages/chofer/view', { chofer: chofer });
+      res.render('pages/chofer/view', {
+        user: req.user,
+        flash: req.flash(),
+        chofer: chofer
+      });
     }).catch((error) => {
       console.error(
         'Error al obtener el modelo "chofer" desde la base de datos: \n',
@@ -61,7 +69,10 @@ function create(req, res) {
         error.message);
     });
   } else {
-    res.render('pages/chofer/create');
+    res.render('pages/chofer/create', {
+      user: req.user,
+      flash: req.flash(),
+    });
   }
 }
 
@@ -101,7 +112,11 @@ function update(req, res) {
   } else {
     Chofer.findByPk(req.params.id)
     .then((chofer) => {
-      res.render('pages/chofer/update', { chofer: chofer });
+      res.render('pages/chofer/update', {
+        user: req.user,
+        flash: req.flash(),
+        chofer: chofer
+      });
     }).catch((error) => {
       console.error(
         'Error al obtener el modelo "chofer" desde la base de datos: \n',
