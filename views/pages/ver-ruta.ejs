@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../partials/header.ejs %>
+  <link type="text/css" href="/css/leaflet.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <% include ../partials/nav.ejs %>
+
+  <div class="jumbotron text-center" style="
+      background-image: url('/img/website-header-blur-dark.jpg');
+      background-repeat: no-repeat;
+      background-size: 100%;">
+    <div class="container">
+      <a href="/" class="lang-logo">
+        <img src="/lang-logo.png">
+      </a>
+      <h1>Gestión de la Linea de Micros 130</h1>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Seguimiento de Buses - Ruta de <%= sentido %></h3>
+          </div>
+          <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarParadas()">
+              Mostrar Paradas</button>
+            <hr>
+            <h5 class="card-title"><span class="oi oi-map" style="color: darkgreen"></span> Mapa</h5>
+            <hr>
+            <!-- el mapa Leaflet se renderiza aquí -->
+            <div class="map" id="map" style="width: 100%; height: 960px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+  </div> <!-- container -->
+
+  <% include ../partials/footer.ejs %>
+
+
+  <script type="text/javascript" src="/js/leaflet.js"></script>
+  <script type="text/javascript" src="/js/geoJsonLoader.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+    // ======================================================================================
+    // =========================== LEAFTLET.JS MAPS =========================================
+    // ======================================================================================
+
+    // establecer el mapa, pasandole el ID de un DIV en el cual se pueda dibujar
+    const map = new L.Map('map');
+
+    // crear la capa de tiles con la atribución correcta
+    const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const osmAttrib = 'Datos de mapa © <a href="https://openstreetmap.org">OpenStreetMap</a> y contribuyentes';
+    const osm = new L.TileLayer(osmUrl, { minZoom: 12, maxZoom: 19, attribution: osmAttrib });
+
+    map.setView(new L.LatLng(-17.783318, -63.182120), 12); // centrar mapa en la plaza 24 de septiembre, zoom nivel 12
+    map.addLayer(osm);
+
+
+    function colocarMarcador(map, coords) {
+      // coords: {lat, lon}
+      L.marker([coords.lat, coords.lon]).addTo(map);
+    }
+
+    function crearMarcadorDeBus(busLocation) {
+      const iconOpts = {
+        iconUrl: window.location.origin + '/img/markers/' + busLocation.nro_interno + '.png',
+        iconSize: [64, 64],
+        iconAnchor: [32, 64]
+      };
+      const markerOpts = {
+        icon: L.icon(iconOpts),
+        title: 'Interno #' + busLocation.nro_interno
+      };
+      // marker.addTo(map);
+      return L.marker([busLocation.coords.latitude, busLocation.coords.longitude], markerOpts);
+    }
+
+  </script>
+
+  <script>
+    // ======================================================================================
+    // =========================== SOCKET.IO TRACKING =======================================
+    // ======================================================================================
+
+    // const server = 'http://localhost:5000/';
+    const server = window.location.origin;
+    const nsp = '/rastreo';
+    const socket = io(server + nsp);
+    const room = '<%= sentido %>';
+
+    let savedLocations = [];
+
+    // al conectarse, unirse a la sala
+    socket.on('connect', () => {
+      socket.emit('join', { room });  // unirse a la sala
+      socket.emit('allLocationsRequest', { room }); // pedir todas las ubicaciones que tiene el servidor
+      console.log('Socket de rastreo conectado a: ' + server + nsp + '; sala: ' + room);
+    });
+
+    socket.on('allLocationsResponse', (newLocations) => {
+      console.log(newLocations);
+      newLocations.forEach((newLocation) => {
+        let marker = crearMarcadorDeBus(newLocation);
+        newLocation.marker = marker;
+        map.addLayer(marker);
+        savedLocations.push(newLocation);
+      });
+      console.log(savedLocations);
+    });
+
+    // evento al recibir una nueva ubicación
+    // pointLatLon: { lat: -17.x, lon: -63.x}
+    socket.on('locationFromServer', (newLocation) => {
+      let index = getBusLocationIndex(newLocation.nro_interno); // determinar si ya se tenía registro de este bus
+      if (index >= 0) {
+        // actualizar el dato existente
+        let location = savedLocations[index];
+        location.coords.latitude = newLocation.coords.latitude;
+        location.coords.longitude = newLocation.coords.longitude;
+        location.time = newLocation.time;
+        location.marker.setLatLng([newLocation.coords.latitude, newLocation.coords.longitude]);
+      } else {
+        // insertar el nuevo dato
+        let marker = crearMarcadorDeBus(newLocation);
+        newLocation.marker = marker;
+        map.addLayer(marker);
+        savedLocations.push(newLocation);
+      }
+    });
+
+    socket.on('removeBusLocation', (data) => {
+      console.log(`Received request to remove bus#${data.nro_interno} from room "${data.room}`);
+      const index = getBusLocationIndex(data.nro_interno);
+      if (index >= 0) {
+        map.removeLayer(savedLocations[index].marker);
+        savedLocations.splice(index, 1);
+      }
+    });
+
+
+
+    // Al reconectar el socket, quitar toda la información almacenada en "savedLocations"
+    // ya que pueden haber ocurrido cosas entre la desconexión y la reconexión :v
+    socket.on('reconnect', () => {
+      for(i = 0; i < savedLocations.length; i++){
+        map.removeLayer(savedLocations.marker); // quitar los marcadores existentes, uno por uno
+      }
+      savedLocations = []; // hacer que savedLocations apunte a un array vacío
+    });
+
+    function getBusLocationIndex(nro_interno) {
+      let result = -1;
+      for (i = 0; i < savedLocations.length; i++) {
+        if (savedLocations[i].nro_interno == nro_interno) {
+          result = i;
+          break;
+        }
+      }
+      return result;
+    }
+
+  </script>
+
+
+  <script>
+    // ======================================================================================
+    // ========================= CARGADO DE SHAPEFILES  =====================================
+    // ======================================================================================
+
+    // autoejecutado al cargar la página
+    loadPolylinesShpToMap('linea_130_ruta_<%= sentido %>', map, 'green');
+
+    function mostrarParadas() {
+      loadPointsShpToMap('linea_130_paradas_<%= sentido %>', map);
+    }
+  </script>
+</body>
+
+</html>

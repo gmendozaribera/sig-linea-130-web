@@ -64,11 +64,15 @@
 
               <tr>
                 <td><b>Propietario:</b></td>
+                <% if(bus.propietario){%>
                 <td>
                   <a href="/propietario/view/<%= bus.propietario_id %>">
                     <%= `${bus.propietario.nombres} ${bus.propietario.apellidos} (${bus.propietario.ci})` %>
                   </a>
                 </td>
+                <% }else{ %>
+                <td><i>No especificado</i></td>
+                <% } %>
               </tr>
 
               <tr>
@@ -80,7 +84,7 @@
                   </a>
                 </td>
                 <% }else{ %>
-                  <td><i>No especificado</i></td>
+                <td><i>No especificado</i></td>
                 <% } %>
               </tr>
 
@@ -89,7 +93,7 @@
                 <% if(bus.estado_bus) {%>
                 <td><%= bus.estado_bus.nombre %></td>
                 <% }else{ %>
-                  <td><i>No especificado</i></td>
+                <td><i>No especificado</i></td>
                 <% } %>
               </tr>
 

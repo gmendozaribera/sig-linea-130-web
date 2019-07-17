@@ -66,12 +66,12 @@ function shpToGeoJsonArr(filename, callback) {
           if (result.done) {
             // si ya no quedan más características cortar la ejecución y retornar
             console.log(`[SHP] Se terminó de convertir ${filename} a GeoJSON.`);
-            console.log('[SHP] Resultado:', shpFeatures); // TO DO: deshabilitar esto en producción!
+            //console.log('[SHP] Resultado:', shpFeatures); // TO DO: deshabilitar esto en producción!
             return callback(shpFeatures);
           } else {
             // aun quedan caracteristicas que procesar, continuar
             console.log('[SHP] Característica convertida a GeoJSON.');
-            console.log('[SHP] Resultado:', result.value);  // TO DO: deshabilitar esto en producción!
+            // console.log('[SHP] Resultado:', result.value);  // TO DO: deshabilitar esto en producción!
             shpFeatures.push(result.value);
             return source.read().then(log); // continuar leyendo características
           }

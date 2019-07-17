@@ -1,6 +1,9 @@
 console.log("[INFO] Iniciando sistema de gestión de la linea 130...");
 
-// requires básicos
+// ===========================================================================
+// ============================ REQUIRES BASICOS =============================
+// ===========================================================================
+
 const path = require('path');                 // para facilitar el manejo de rutas del sistema de archivos
 const fs = require('fs');                     // para manejo de archivos
 const express = require('express');           // servidor HTTP
@@ -13,7 +16,7 @@ const models = require('./models');           //  los modelos Sequelize ORM
 
 // algunas variables de entorno.
 const http_port = process.env.PORT || 5000;
-const app_secret = process.env.APP_SECRET;
+const app_secret = process.env.APP_SECRET || 'SHOULDREALLYCHANGETHISINPROD';
 
 
 
@@ -33,16 +36,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+// pequeño middleware que escribe las solicitudes a la consola
+app.use((req, res, next) => {
+  console.log(`[REQUEST] IP: "${req.ip}"; URL: "${req.url}"`);
+  next();
+});
+
 // levantar servidor, escuchando en el puerto anteriormente establecido
 const server = app.listen(http_port, () => {
   console.log(`[INFO] Servidor escuchando en el puerto ${http_port}`)
 });
 
-//  establecer un pequeño middleware que escribe las solicitudes a la consola
-app.use((req, res, next) => {
-  console.log(`[REQUEST] IP: "${req.ip}"; URL: "${req.url}"`);
-  next();
-});
+
 
 
 
@@ -206,28 +211,12 @@ app.post('/user/create/', (req, res) => { userController.create(req, res) });
 app.get('/user/update/:id', (req, res) => { userController.update(req, res) });
 app.post('/user/update/', (req, res) => { userController.update(req, res) });
 
-/*
-// rutas sobre gestión de las rutas de transporte (autenticar)
-app.get('/ruta/', (req, res) => { res.redirect('/ruta/index') });
-app.get('/ruta/index', (req, res) => { res.render('pages/ruta/index') });
-app.get('/ruta/create', (req, res) => { res.render('pages/ruta/index') });
-app.get('/ruta/view/:id', (req, res) => { res.render('pages/ruta/index') });
-app.get('/ruta/update/:id', (req, res) => { res.render('pages/ruta/index') });
+// página que muestra las rutas, paradas y hace seguimiento a los buses en ruta
+app.get('/ver-ruta-ida', (req,res) => res.render('pages/ver-ruta', {sentido: 'ida'}));
+app.get('/ver-ruta-vuelta', (req,res) => res.render('pages/ver-ruta', {sentido: 'vuelta'}));
 
-// rutas sobre gestión de puntos de control (autenticar)
-app.get('/punto-control/', (req, res) => { res.redirect('punto-control/index') });
-app.get('/punto-control/index', (req, res) => { res.render('pages/punto-control/index') });
-app.get('/punto-control/create', (req, res) => { res.render('pages/punto-control/index') });
-app.get('/punto-control/view/:id', (req, res) => { res.render('pages/punto-control/index') });
-app.get('/punto-control/update/:id', (req, res) => { res.render('pages/punto-control/index') });
-
-// rutas sobre gestión de asistencia, retrasos, multas, etc (autenticar)
-app.get('/control-asistencia/', (req, res) => { res.redirect('/control-asistencia/index') }); // redirigir a la pagina de registro de asistencia si es un chofer
-app.get('/control-asistencia/registrar', (req, res) => { res.render('pages/control-asistencia/index') }); // equivalente al marcado de tarjeta
-app.get('/control-asistencia/index', (req, res) => { res.render('pages/control-asistencia/index') });
-app.get('/control-asistencia/view/:id', (req, res) => { res.render('pages/control-asistencia/index') });
-app.get('/control-asistencia/update/:id', (req, res) => { res.render('pages/control-asistencia/index') });
-*/
+// map test!
+app.get('/tracking-test', (req, res) => { res.render('pages/tracking-test') });
 
 
 // prueba de login para la app movil :v
@@ -273,9 +262,6 @@ app.get('/api/v1/login', (req, res) => {
 console.log('[INFO] Shapefiles disponibles en la carpeta "./shapefiles":');
 console.log(procesadorShapefile.shpPathsArr());
 
-// página para mostrar el mapa
-app.get('/shapefile', (req, res) => res.render('pages/shapefile'));
-
 // servicio REST/JSON que responde un array de GeoJSON
 app.get('/get-geojson/:filename', (req, res) => {
   procesadorShapefile.shpToGeoJsonArr(req.params.filename, (geoJsonArr) => {
@@ -284,9 +270,32 @@ app.get('/get-geojson/:filename', (req, res) => {
 });
 
 
-/* ======================================================= */
-/* ================= socket.io chat demo: ================ */
-/* ======================================================= */
+// página para mostrar el form de chat
+app.get('/chat', requireAuth, (req, res) => {
+  res.render('pages/chat');
+});
+
+// página para mostrar el seguimiento en tiempo real en mapa
+app.get('/tracking', (req, res) => {
+  res.render('pages/tracking');
+});
+
+
+// manejando rutas no definidas -> tirar un 404
+app.get('*', (req, res) => {
+  res.status(404).render('pages/404');
+  log(`404: Solicitud para ruta no válida: ${req.url}`);
+});
+
+// ===================================================
+// ============ /CONFIGURACIÓN DE RUTAS ==============
+// ===================================================
+
+
+
+// ===========================================================================
+// ======================= SOCKET.IO CHAT DEMO ===============================
+// ===========================================================================
 
 const io = require('socket.io')(server);    // handler de socket.io (requiere instanciar con un servidor http)
 
@@ -318,69 +327,110 @@ chatNsp.on('connection', (chatSocket) => {
   });
 });
 
-/* ======================================================= */
-/* ================= socket.io tracking: ================= */
-/* ======================================================= */
+// ===========================================================================
+// ======================== SOCKET.IO TRACKING ===============================
+// ===========================================================================
 
-const trackingNsp = io.of('/tracking');   // namespace "tracking"
+const trackingNsp = io.of('/rastreo');   // namespace "rastreo-ida"
 let trackingSockets = []; // array que mantiene referencias a los sockets conectados
-let locations = [];
+let savedLocations = []; // array que mantinene una lista de ubicaciones
 
 trackingNsp.on('connection', (trackingSocket) => {
 
   trackingSockets.push(trackingSocket); // añadir al array de sockets actualmente conectados.
-  console.log(`New tracking socket registered: Socket ID: ${trackingSocket.id}`);
-  console.log('trackingSockets: [');
-  trackingSockets.forEach((trackingSocket) => { console.log(`  ${trackingSocket.id},`) });
-  console.log(']');
+  console.log(`[TRACKING] Nuevo socket de seguimiento registrado: Socket ID: ${trackingSocket.id}`);
+  logTrackingSockets();
 
-  /*
-    Estructura del objeto "newLocationData":
-    newLocationData = {
-      bus_id: int,
+  trackingSocket.on('join', (data) => {
+    trackingSocket.join(data.room);
+  });
+
+
+  trackingSocket.on('locationFromClient', (newLocation) => {
+    /* Estructura del objeto "newLocationData":
+    newLocation = {
+      nro_interno: int,
+      time: timestamp,
+      room: string,
       coords: {
         latitude: real,
         longitude: real
       }
+    } */
+
+    newLocation.time = Date.now(); // agregar timestamp (para determinar edad del dato)
+    trackingNsp.to(newLocation.room).emit('locationFromServer', newLocation); // emitir la nueva información a los clientes
+    const index = getBusLocationIndex(newLocation.nro_interno); // determinar si ya se tenía registro de este bus
+    // TO DO: manejar el caso en que el bus que está siendo modificado ya existía en otro room
+    if (index >= 0) {
+      const oldLocation = savedLocations[index];
+      if (oldLocation.room !== newLocation.room){
+        trackingNsp.to(oldLocation.room).emit('removeBusLocation', oldLocation);
+      }
+      savedLocations[index] = newLocation; // reemplazar el dato existente
+    } else {
+      savedLocations.push(newLocation); // insertar el nuevo dato
     }
-  */
-  trackingSocket.on('locationUpdate', (newLocationData) => {
-    /*  aquí se debería registrar:
-        - qué bus está haciendo este recorrido?
-        - coordenadas (lat y long)
-        - tiempo en que se registró la actualización (para determinar la "edad" del dato)
-     */
-    let index = getLocationIndex(newLocationData);
-    if (index >= 0)
-      locations[index] = newLocationData; // update existing
-    else
-      locations.push(newLocationData); // push new data
-    trackingNsp.emit('locationUpdate', newLocationData); // emite la información a todo el namespace
-    console.log('locations: [');
-    locations.forEach((location) => { console.log(`  Bus ID: ${location.bus_id}; coords: [${JSON.stringify(location.coords)}]`) });
-    console.log(']');
+    logSavedLocations();
   });
 
-  trackingSocket.on('allLocationsRequest', () => {
-    // emitir el array de todos los buses solamente al cliente que lo requiere
-    // es decir, no usar un "emit" común ;)
-    trackingSocket.emit('allLocationsResponse', locations); // emite al cliente que envió la solicitud de ubicaciones
+
+
+
+  trackingSocket.on('allLocationsRequest', (data) => {
+    // obtener todas las ubicaciones de buses que correspondan a este room
+    let locationsForRoom = [];
+    savedLocations.forEach((savedLocation) => {
+      if (savedLocation.room === data.room) locationsForRoom.push(savedLocation);
+    });
+    trackingSocket.emit('allLocationsResponse', locationsForRoom); // emite solamente al socket que envió la solicitud de ubicaciones
   });
+
+
+
+  trackingSocket.on('removeBusLocation', (data) => {
+    console.log(`Trying to remove bus with ID: ${data.nro_interno}`);
+    const index = getBusLocationIndex(data.nro_interno);
+    if (index >= 0){
+      savedLocations.splice(index, 1);
+    }
+    console.log(`Broadcasting deletion of bus "${data.nro_interno}" on room: ${data.room}`);
+    trackingNsp.to(data.room).emit('removeBusLocation', data);
+  });
+
+
+
 
   trackingSocket.on('disconnect', (reason) => {
-    console.log(`TrackingSocket disconnected. Socket ID: ${trackingSocket.id}; Reason: ${reason}`);
-    trackingSockets.splice(trackingSockets.indexOf(trackingSocket), 1);
-    console.log('trackingSockets: [');
-    trackingSockets.forEach((trackingSocket) => { console.log('  ' + trackingSocket.id + ',') });
-    console.log(']');
+    console.log(`[TRACKING] Socket de rastreo desconectado. Socket ID: ${trackingSocket.id}; Razón: ${reason}`);
+    trackingSockets.splice(trackingSockets.indexOf(trackingSocket), 1); // quitar del array de sockets tracking
+    logTrackingSockets();
   });
 
-});
+}); /* /trackingNsp  */
 
-function getLocationIndex(locationData) {
+function logTrackingSockets() {
+  console.log('trackingSockets: [');
+  trackingSockets.forEach((trackingSocket) => { console.log('  ' + trackingSocket.id + ',') });
+  console.log(']');
+}
+
+function logSavedLocations() {
+  console.log('savedLocations: [');
+  savedLocations.forEach((savedLocation) => {
+    console.log(`  Bus ID: ${savedLocation.nro_interno}; coords: [${JSON.stringify(savedLocation.coords)}]`)
+  });
+  console.log(']');
+}
+
+/**
+ * Obtiene el índice de la ubicación de un bus, buscando por el número de interno
+ * @param {integer} nro_interno El número de interno de un bus
+ */
+function getBusLocationIndex(nro_interno) {
   let result = -1;
-  for (i = 0; i < locations.length; i++) {
-    if (locations[i].bus_id == locationData.bus_id) {
+  for (i = 0; i < savedLocations.length; i++) {
+    if (savedLocations[i].nro_interno == nro_interno) {
       result = i;
       break;
     }
@@ -388,27 +438,9 @@ function getLocationIndex(locationData) {
   return result;
 }
 
-
-// página para mostrar el form de chat
-app.get('/chat', requireAuth, (req, res) => {
-  res.render('pages/chat');
-});
-
-// página para mostrar el seguimiento en tiempo real en mapa
-app.get('/tracking', (req, res) => {
-  res.render('pages/tracking');
-});
-
-
-// manejando rutas no definidas -> tirar un 404
-app.get('*', (req, res) => {
-  res.status(404).render('pages/404');
-  log(`404: Solicitud para ruta no válida: ${req.url}`);
-});
-
-// ===================================================
-// ============ /CONFIGURACIÓN DE RUTAS ==============
-// ===================================================
+// ===========================================================================
+// ======================== PROCESOS AUXILIARES ==============================
+// ===========================================================================
 
 
 /**

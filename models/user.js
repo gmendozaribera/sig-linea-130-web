@@ -41,6 +41,8 @@ module.exports = function(sequelize, DataTypes){
 
   User.associate = function(models){
     User.belongsTo(models.Role, {foreignKey: 'role_id'});
+    User.hasOne(models.Chofer, {foreignKey: 'user_id'});
+    User.hasOne(models.Propietario, {foreignKey: 'user_id'});
   }
 
   return User;
